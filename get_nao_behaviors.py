@@ -8,7 +8,7 @@ import os
 import sys
 import random
 #PATHS FOR NAO___________________________________________________________
-alPath = "/data/Documents/semester2/AIProject/nao/lib"
+alPath = "/data/Documents/nao/lib"
 #alPath = "C:\Program Files\Aldebaran\Choregraphe 1.6.13\lib"
 sys.path.append(alPath)
 import naoqi
@@ -25,7 +25,7 @@ class getNaoBehaviors:
 		self.port     = port #9559
 		self.frame    = None
 		self.motion   = None
-		self.basePath = "/home/nao/behaviors/"
+		self.basePath = "/home/nao/behaviors/" #PATH TO BEHAVIORS IN NAO'S HEAD
 
 	#INITIALIZE THE VIDEO DEVICE_____________________________________________
 	def initDevice():
