@@ -25,12 +25,13 @@ class getNaoBehaviors:
 		self.port     = port # 9559
 		self.frame    = None
 		self.motion   = None
-		self.basePath = "/home/nao/behaviors/" #PATH TO BEHAVIORS IN NAO'S HEAD
+		#SET PATH TO BEHAVIORS IN NAO'S HEAD
+		self.basePath = "/data/Documents/nao/projects/" #"/home/nao/behaviors/" 
 
 	#INITIALIZE THE VIDEO DEVICE_____________________________________________
 	def initDevice(self):
-		self.frame  = ALProxy("ALFrameManager", host, port)
-		self.motion = ALProxy("ALMotion", host, port)
+		self.frame  = ALProxy("ALFrameManager", self.host, self.port)
+		self.motion = ALProxy("ALMotion", self.host, self.port)
 
 	#CALL THE NEEDED BEHAVIOR________________________________________________
 	def callBehavior(self,what):
