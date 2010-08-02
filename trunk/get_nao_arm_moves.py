@@ -19,20 +19,21 @@ from naoqi import ALProxy
 from naoqi import ALBehavior         
 from naoqi import motion
 
-#_________________________________________________________________________
-#_________________________________________________________________________
+#_________________________________________________________________________________________________
+#_________________________________________________________________________________________________
 class getNaoArmMoves:
 	def __init__(self, host, port):
 		self.host         = host # "192.168.0.80"
 		self.port         = port # 9559
 		self.motionDevice = None
+		self.memoryDevice = None
+		self.speechDevice = None
+
 		self.stiffness    = 1.0
 		self.nrJoints     = 0
-	#INITIALIZE THE VIDEO DEVICE_____________________________________________
-	def initDevice(self):
-		#CREATE A BROKER
-		#myBroker = ALBroker("naoBroker","0.0.0.0",9999, self.host, self.port)
 
+	#INITIALIZE THE MOTION DEVICE__________________________________________________________________
+	def initDevice(self):
 		#CONNECT TO A PROXY
 		try:
 		    self.motionDevice = ALProxy("ALMotion", self.host, self.port)
@@ -43,7 +44,7 @@ class getNaoArmMoves:
 		#MAKE NAO STIFF (OTHERWISE IT WON'T MOVE)
 		self.motionDevice.stiffnessInterpolation("Body",self.stiffness,1.0)
 
-	#PUT NAO IN AN INITIAL POSITON (REQUIRED FOR ANY MOVEMENT)____________________________
+	#PUT NAO IN AN INITIAL POSITON (REQUIRED FOR ANY MOVEMENT)______________________________________
 	def initPos(self):
 		self.nrJoints = len(self.motionDevice.getJointNames("Body"))
 		#DEFINE THE INITIAL POSITION
@@ -68,7 +69,7 @@ class getNaoArmMoves:
 		self.motionDevice.angleInterpolationWithSpeed(pName, pTargetAngles, pMaxSpeed)	
 		time.sleep(1)
 
-	#MOVE ARM BETWEEN 2 POSITIONS____________________________________________
+	#MOVE ARM BETWEEN 2 POSITIONS__________________________________________________________________
 	def moveArm(self, dx, dy, dz, dwx, dwy, dwz, closeOpen):
 		#DO NOT FORGET TO INITIALIZE NAO'S POSITION!		
 		if(closeOpen == "close"):
@@ -99,6 +100,47 @@ class getNaoArmMoves:
 
 		self.motionDevice.post.positionInterpolation(effector, space, path, axisMask, times, isAbsolute)
 		
+	#CHECK IF THERE IS SOMETHING IN THE HAND AND IF SO CLOSE IT______________________________________________
+	def grabObject(self):
+		#WAIT TO BE HANDED IN THE OBJECT
+		self.moveArm(0.2, -0.2, 0.5, 0.5, 0.9, 0.2, "open")
+
+		#CONNECT TO A MEMORY PROXY
+		try:
+			self.memoryDevice = ALProxy("ALMemory", self.host, self.port)
+		except Exception, e:
+		    print "Error when creating memory device proxy:"+str(e)
+		    exit(1)
+
+		#CHECK FOR OBJECT IN THE HAND!!!
+
+		#Device/SubDeviceList/LHand/ElectricCurrent/Sensor/Value	
+		#Device/SubDeviceList/LHand/Hardness/Actuator/Value	 
+		#Device/SubDeviceList/LHand/Position/Actuator/Value	 
+		#Device/SubDeviceList/LHand/Position/Sensor/Value
+		#Device/SubDeviceList/RWristYaw/ElectricCurrent/Sensor/Value	
+		#Device/SubDeviceList/RWristYaw/Hardness/Actuator/Value	
+		#Device/SubDeviceList/RWristYaw/Position/Actuator/Value	
+		#Device/SubDeviceList/RWristYaw/Position/Sensor/Value
+
+		handBefore = self.memoryDevice.getDataOnChange("Device/SubDeviceList/LHand/Hardness/Actuator/Value",0)
+		handAfter  = self.memoryDevice.getDataOnChange("Device/SubDeviceList/LHand/Hardness/Actuator/Value",0)
+
+		#CONNECT TO A SPEECH PROXY
+		try:
+			self.speechDevice = ALProxy("ALTextToSpeech", self.host, self.port)
+		except Exception, e:
+		    print "Error when creating speech device proxy:"+str(e)
+		    exit(1)
+		
+		while (handAfter == handBefore):
+			time.sleep(5)
+			handAfter = self.memoryDevice.getDataOnChange("Device/SubDeviceList/LHand/Hardness/Actuator/Value",0)
+			self.speechDevice.post.say("Hand in that microphone, will you?!")
+			#TO BE COMMENTED
+			self.memoryDevice.insertData("Device/SubDeviceList/LHand/Hardness/Actuator/Value", 1)
+		self.moveArm(-1.3, 0.2, -0.7, 1.8, -0.2, -0.4, "close")
+			
 		
  	#MOVE ARM IN AN ELLIPSOIDAL MANNER__________________________________________________
 	def moveArmEllipse(self):
