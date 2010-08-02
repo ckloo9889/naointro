@@ -1,5 +1,5 @@
 from get_nao_image import *
-naoIm = getNaoImage("172.0.0.0",9559) # "192.168.0.80",9559
+naoIm = getNaoImage("127.0.0.1",9559) # "192.168.0.80",9559
 naoIm.initDevice()
 
 while True:

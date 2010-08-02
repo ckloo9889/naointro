@@ -1,5 +1,5 @@
 from get_nao_behaviors import *
-naoBeh = getNaoBehaviors("172.0.0.0",9559)# "192.168.0.80",9559
+naoBeh = getNaoBehaviors("127.0.0.1",9559)# "192.168.0.80",9559
 naoBeh.initDevice()
-naoBeh.callBehavior("move_rpsBeginGame.xar")
+naoBeh.callBehavior("hello/behavior.xar")
 
