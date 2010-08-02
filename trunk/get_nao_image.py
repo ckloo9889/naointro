@@ -21,13 +21,13 @@ from naoqi import ALBehavior
 #_________________________________________________________________________
 class getNaoImage:
 	def __init__(self, host, port):
-		self.host        = host #"192.168.0.80"
-		self.port        = port #9559
+		self.host        = host # "192.168.0.80"
+		self.port        = port # 9559
 		self.videoDevice = None
 		self.gvm         = None
 
 	#INITIALIZE THE VIDEO DEVICE_____________________________________________
-	def initDevice():
+	def initDevice(self):
 		#CONNECT TO A PROXY
 		try:
 		    self.videoDevice = ALProxy("ALVideoDevice", self.host, self.port)
@@ -39,7 +39,7 @@ class getNaoImage:
 		self.gvm = self.videoDevice.subscribe("GVM", 0, 13, 1) # ... parameters?
 
 	#RETRIEVE IMAGES__________________________________________________________
-	def getImage():
+	def getImage(self):
 		#GET THE IMAGE BYTES
 	    result = self.videoDevice.getImageRemote(self.gvm)
 		
@@ -55,7 +55,7 @@ class getNaoImage:
     	return cv_img
 
  	#CLOSE VIDEO DEVICE_________________________________________________________
-	def closeDevice():
+	def closeDevice(self):
     	#UNSUBSCRIBE THE IMAGE DEVICE - UNSUBSCRIBE SVM TO VIM
 		self.videoDevice.unsubscribe(self.gvm)
 
