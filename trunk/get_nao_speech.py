@@ -32,7 +32,7 @@ class getNaoSpeech:
 		self.oldInput     = ""
 	
 	#INITIALIZE THE MOTION DEVICE__________________________________________________________________
-	def initDevice(self):
+	def initDevice(self,chat):
 		#CONNECT TO A MEMORY PROXY
 		try:
 			self.memoryDevice = ALProxy("ALMemory", self.host, self.port)
@@ -55,18 +55,23 @@ class getNaoSpeech:
 		    exit(1)
 
 		#SET UP RECOGNITION DEVICE
-		self.recoDevice.setLanguage("English") 
-		wordList = ["yes","no","hello Nao","goodbye Nao","stupid robot", "stand up"]
+		self.recoDevice.setLanguage("English")
+		if(chat == False): 
+			wordList = ["nao get up","get up","go"]
+		else:	
+			wordList = ["hello", "bye", "goodbye", "how are you"]
 		self.recoDevice.setWordListAsVocabulary(wordList)	
 		self.recoDevice.setParameter("EarUseFilter",1.0)	
 
 		#INITIALISE ALICE
-		cwd = os.getcwd()
-		os.chdir(alicePath)
-		self.aliceKernel = aiml.Kernel()
-		self.aliceKernel.learn("std-startup.xml")
-		self.aliceKernel.respond("load aiml b")
-		
+		if(chat == True):
+			cwd = os.getcwd()
+			os.chdir(alicePath)
+			self.aliceKernel = aiml.Kernel()
+			self.aliceKernel.learn("std-startup.xml")
+			self.aliceKernel.respond("load aiml b")
+			os.chdir(cwd)					
+
 		#START WORDS DETECTION
 		self.recoDevice.subscribe("MyModule")
 
@@ -85,8 +90,9 @@ class getNaoSpeech:
 			if(maxSpeech != self.oldInput):	 
 				#RESPOND TO THE INPUT
 				self.oldInput = maxSpeech
-				if(chat == 1):
+				if(chat == True):
 					aliceReply = self.aliceKernel.respond(str(maxSpeech))
+					aliceReply.lower().replace("alice", "nao")
 					self.speechDevice.post.say(aliceReply)
 				else:
 					return maxSpeech						
