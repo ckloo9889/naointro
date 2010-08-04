@@ -96,7 +96,7 @@ class getNaoArmMoves:
 		
 		#GO TO THE TARGET POSITION ANF BACK AGAIN
 		path  = targetPos #[targetPos, currentPos]
-		times = 2.0 #TIME IN SECONDS
+		times = 10.0 #TIME IN SECONDS
 
 		self.motionDevice.post.positionInterpolation(effector, space, path, axisMask, times, isAbsolute)
 		
@@ -111,20 +111,8 @@ class getNaoArmMoves:
 		except Exception, e:
 		    print "Error when creating memory device proxy:"+str(e)
 		    exit(1)
-
-		#CHECK FOR OBJECT IN THE HAND!!!
-
-		#Device/SubDeviceList/LHand/ElectricCurrent/Sensor/Value	
-		#Device/SubDeviceList/LHand/Hardness/Actuator/Value	 
-		#Device/SubDeviceList/LHand/Position/Actuator/Value	 
-		#Device/SubDeviceList/LHand/Position/Sensor/Value
-		#Device/SubDeviceList/RWristYaw/ElectricCurrent/Sensor/Value	
-		#Device/SubDeviceList/RWristYaw/Hardness/Actuator/Value	
-		#Device/SubDeviceList/RWristYaw/Position/Actuator/Value	
-		#Device/SubDeviceList/RWristYaw/Position/Sensor/Value
-
-		handBefore = self.memoryDevice.getDataOnChange("Device/SubDeviceList/LHand/Hardness/Actuator/Value",0)
-		handAfter  = self.memoryDevice.getDataOnChange("Device/SubDeviceList/LHand/Hardness/Actuator/Value",0)
+		handBefore = self.memoryDevice.getData("FrontTactilTouched")
+		handAfter  = self.memoryDevice.getData("FrontTactilTouched")
 
 		#CONNECT TO A SPEECH PROXY
 		try:
@@ -134,11 +122,10 @@ class getNaoArmMoves:
 		    exit(1)
 		
 		while (handAfter == handBefore):
-			time.sleep(5)
-			handAfter = self.memoryDevice.getDataOnChange("Device/SubDeviceList/LHand/Hardness/Actuator/Value",0)
+			time.sleep(2)
+			handAfter = self.memoryDevice.getData("FrontTactilTouched")
 			self.speechDevice.post.say("Hand in that microphone, will you?!")
-			#TO BE COMMENTED
-			self.memoryDevice.insertData("Device/SubDeviceList/LHand/Hardness/Actuator/Value", 1)
+			break
 		self.moveArm(-1.3, 0.2, -0.7, 1.8, -0.2, -0.4, "close")
 			
 		
