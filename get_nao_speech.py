@@ -71,19 +71,25 @@ class getNaoSpeech:
 		self.recoDevice.subscribe("MyModule")
 
 	#CHAT WITH NAO__________________________________________________________________________________
-	def naoChat(self):
-		while True:
-			inputSpeech = self.memoryDevice.getData("WordRecognized")
-
-			print inputSpeech
-
-			if(len(inputSpeech)>0):
-				if(inputSpeech[0] != self.oldInput and not unicode(str(inputSpeech)).isnumeric()):	 
-					#RESPOND TO THE INPUT
-					self.oldInput = inputSpeech[0]
-					aliceReply    = self.aliceKernel.respond(str(inputSpeech[0]))
+	def naoChat(self,chat):
+		maxSpeech = "";
+		maxProbab = 0;	
+		inputSpeech = self.memoryDevice.getData("WordRecognized")
+		
+		if(len(inputSpeech)>0):
+			for i in range(0,len(inputSpeech)):
+				if(i%2==1 and maxProbab>inputSpeech[i]):
+					maxSpeech = inputSpeech[i-1];
+					maxProbab = inputSpeech[i];	
+				
+			if(maxSpeech != self.oldInput):	 
+				#RESPOND TO THE INPUT
+				self.oldInput = maxSpeech
+				if(chat == 1):
+					aliceReply = self.aliceKernel.respond(str(maxSpeech))
 					self.speechDevice.post.say(aliceReply)
-					break
+				else:
+					return maxSpeech						
 
 	#STOP CHATTING___________________________________________________________________________________
 	def stopSpeechReco(self):
