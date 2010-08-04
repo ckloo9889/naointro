@@ -1,5 +1,5 @@
 from get_nao_arm_moves import *
-naoArm = getNaoArmMoves("127.0.0.1",9559) #"192.168.0.80", 9559
+naoArm = getNaoArmMoves("192.168.0.80", 9559) #("127.0.0.1",9559) #"192.168.0.80", 9559
 naoArm.initDevice()
 naoArm.initPos()
 		
@@ -11,4 +11,4 @@ naoArm.initPos()
 naoArm.grabObject()
 
 #naoArm.moveArmEllipse()
-naoArm.stiffnessOff()
+#naoArm.stiffnessOff()
