@@ -30,6 +30,7 @@ class getNaoSpeech:
 		self.memoryDevice = None
 		self.aliceKernel  = None
 		self.oldInput     = ""
+		self.threshold    = 0.1
 	
 	#INITIALIZE THE MOTION DEVICE__________________________________________________________________
 	def initDevice(self,chat):
@@ -59,10 +60,15 @@ class getNaoSpeech:
 		if(chat == False): 
 			wordList = ["nao get up","get up","go"]
 		else:	
-			wordList = ["hello", "bye", "goodbye", "how are you"]
+			dictFile = open("dictionary.pkl", "rb")
+			dictio   = pickle.load(dictFile)
+			dictFile.close()
+			wordList = dictio.keys()
 		self.recoDevice.setWordListAsVocabulary(wordList)	
 		self.recoDevice.setParameter("EarUseFilter",1.0)	
-
+		self.recoDevice.setParameter("EarUseSpeechDetector",2.0)
+		self.recoDevice.setParameter("EarSpeed",2.0)
+	
 		#INITIALISE ALICE
 		if(chat == True):
 			cwd = os.getcwd()
@@ -75,31 +81,49 @@ class getNaoSpeech:
 		#START WORDS DETECTION
 		self.recoDevice.subscribe("MyModule")
 
+	#SORT DICTINARY_____________________________________________________________________________
+	def getPredictedWords(self,predict,chat):
+		if(chat == False):
+			maxWord   = ""
+			maxProbab = 0
+			for(word,probab) in predict.items():
+				if(maxProbab<probab):
+					maxProbab = probab
+					maxWord   = word	
+			return maxWord
+		else:
+			predictedSent = ""
+			for(word,probab) in predict.items():
+				if(probab>self.threshold):
+					predictedSent += word+" "
+			predictedSent = predictedSent.strip()
+	    	return predictedSent
+
 	#CHAT WITH NAO__________________________________________________________________________________
 	def naoChat(self,chat):
-		maxSpeech = "";
-		maxProbab = 0;	
 		inputSpeech = self.memoryDevice.getData("WordRecognized")
-		
+		predict     = {}
 		if(len(inputSpeech)>0):
 			for i in range(0,len(inputSpeech)):
-				if(i%2==1 and maxProbab>inputSpeech[i]):
-					maxSpeech = inputSpeech[i-1];
-					maxProbab = inputSpeech[i];	
-				
-			if(maxSpeech != self.oldInput):	 
+				if(i%2==1): #IF IT IS A PROBABILITY
+					predict[inputSpeech[i-1]] = inputSpeech[i]
+			predictedWords = self.getPredictedWords(predict,chat)
+					
+			if(predictedWords != self.oldInput):	 
 				#RESPOND TO THE INPUT
-				self.oldInput = maxSpeech
+				self.oldInput = predictedWords
 				if(chat == True):
-					aliceReply = self.aliceKernel.respond(str(maxSpeech))
+					aliceReply = self.aliceKernel.respond(predictedWords)
 					aliceReply.lower().replace("alice", "nao")
 					self.speechDevice.post.say(aliceReply)
 				else:
-					return maxSpeech						
+					return predictedWords						
 
 	#STOP CHATTING___________________________________________________________________________________
 	def stopSpeechReco(self):
 		time.sleep(2)
 		self.recoDevice.unsubscribe("MyModule") 
 
+	def genSpeech(sentence):
+		self.speechDevice.post.say(sentence)
 
