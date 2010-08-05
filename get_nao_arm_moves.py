@@ -182,7 +182,79 @@ class getNaoArmMoves:
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
 		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+
+	def moveArmsInFront(self):
+		names  = "LShoulderPitch"
+		angleLists  = [52.0]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
 		
+		names  = "RShoulderPitch"
+		angleLists  = [52.0]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		                
+		names  = "LShoulderRoll"
+		angleLists  = [2.4]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		
+		names  = "RShoulderRoll"
+		angleLists  = [-2.4]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		
+		names  = "LWristYaw"
+		angleLists  = [36.6]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		
+		names  = "RWristYaw"
+		angleLists  = [-36.6]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		
+		names  = "LElbowRoll"
+		angleLists  = [-65.0]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		
+		names  = "RElbowRoll"
+		angleLists  = [65.0]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+
+		names  = "LHand"
+		angleLists  = [12.0]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		
+		names  = "RHand"
+		angleLists  = [12.0]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		
+				
 		
 	#MOVE ARM BETWEEN 2 POSITIONS__________________________________________________________________
 	def moveArm(self, dx, dy, dz, dwx, dwy, dwz, closeOpen):
