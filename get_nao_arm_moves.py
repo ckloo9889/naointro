@@ -9,8 +9,8 @@ import sys
 import random
 import math
 #PATHS FOR NAO___________________________________________________________
-#alPath = "/data/Documents/nao/lib"
-alPath = "C:\Program Files\Aldebaran\Choregraphe 1.6.13\lib"
+alPath = "/data/Documents/nao/lib"
+#alPath = "C:\Program Files\Aldebaran\Choregraphe 1.6.13\lib"
 sys.path.append(alPath)
 import naoqi
 from naoqi import ALBroker
@@ -69,67 +69,8 @@ class getNaoArmMoves:
 		self.motionDevice.angleInterpolationWithSpeed(pName, pTargetAngles, pMaxSpeed)	
 		time.sleep(1)
 
-	def initPosHoldBottle(self):
-
-		names  = "LShoulderPitch"
-		angleLists  = [40]
-		timeLists   = [1.0]
-		isAbsolute  = True
-		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-
-		names  = "RShoulderPitch"
-		angleLists  = [40]
-		timeLists   = [1.0]
-		isAbsolute  = True
-		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-				
-		names  = "LShoulderRoll"
-		angleLists  = [6.3]
-		timeLists   = [1.0]
-		isAbsolute  = True
-		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-		
-		names  = "RShoulderRoll"
-		angleLists  = [-6.3]
-		timeLists   = [1.0]
-		isAbsolute  = True
-		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-
-		names  = "LWristYaw"
-		angleLists  = [-38.8]
-		timeLists   = [1.0]
-		isAbsolute  = True
-		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-
-		names  = "RWristYaw"
-		angleLists  = [38.8]
-		timeLists   = [1.0]
-		isAbsolute  = True
-		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-		
-		names  = "LHand"
-		angleLists  = [49.9]
-		timeLists   = [1.0]
-		isAbsolute  = True
-		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-
-		names  = "RHand"
-		angleLists  = [49.9]
-		timeLists   = [1.0]
-		isAbsolute  = True
-		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-				
 	#MOVE ARM BETWEEN 2 POSITIONS__________________________________________________________________
 	def moveArm(self, dx, dy, dz, dwx, dwy, dwz, closeOpen):
-		print self.motionDevice.getJointNames("LArm")
 		#DO NOT FORGET TO INITIALIZE NAO'S POSITION!		
 		if(closeOpen == "close"):
 			self.motionDevice.post.closeHand('LHand')
