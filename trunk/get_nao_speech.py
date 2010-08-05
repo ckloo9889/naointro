@@ -10,8 +10,8 @@ import aiml
 import pickle
 alicePath = "/usr/lib/python2.6/dist-packages/aiml/standard-aiml/"
 #PATHS FOR NAO___________________________________________________________
-#alPath = "/data/Documents/nao/lib"
-alPath = "C:\Program Files\Aldebaran\Choregraphe 1.6.13\lib"
+alPath = "/data/Documents/nao/lib"
+#alPath = "C:\Program Files\Aldebaran\Choregraphe 1.6.13\lib"
 sys.path.append(alPath)
 import naoqi
 from naoqi import ALBroker
@@ -31,7 +31,7 @@ class getNaoSpeech:
 		self.memoryDevice = None
 		self.aliceKernel  = None
 		self.oldInput     = ""
-		self.threshold    = 0.01
+		self.threshold    = 0.3
 		self.voice        = voice #"Heather22Enhanced"
 	
 	#INITIALIZE THE MOTION DEVICE__________________________________________________________________
@@ -49,34 +49,33 @@ class getNaoSpeech:
 		except Exception, e:
 		    print "Error when creating speech device proxy:"+str(e)
 		    exit(1)
-		self.speechDevice.setVoice(self.voice)		
-
+		self.speechDevice.setVoice(self.voice)	
+		
 		#CONNECT TO A SPEECH RECOGNITION PROXY
 		try:
 		    self.recoDevice = ALProxy("ALSpeechRecognition", self.host, self.port)
 		except Exception, e:
 		    print "Error when creating speech recognition device proxy:"+str(e)
 		
-		#SET UP RECOGNITION DEVICE    
+		#SET UP RECOGNITION DEVICE
 		try:
 			self.recoDevice.setLanguage("English")
 			if(chat == False): 
-				wordList = ["nao stand up","start up","go"]
+				wordList = ["stand","up","go","nao"]
 			else:	
-				"""
 				dictFile = open("dictionary.pkl", "rb")
 				dictio   = pickle.load(dictFile)
 				dictFile.close()
 				wordList = dictio.keys()
-				"""	
-				wordList = ["poor", "picture", "star", "monday", "good", "surprise"]
+			print wordList
 			self.recoDevice.setWordListAsVocabulary(wordList)	
 			self.recoDevice.setParameter("EarUseFilter",1.0)	
-			self.recoDevice.setParameter("EarUseSpeechDetector",2.0)
-			self.recoDevice.setParameter("EarSpeed",2.0)
+			self.recoDevice.setParameter("EarSpeed",1.0)
+			self.recoDevice.setVisualExpression(False)
+			self.recoDevice.setAudioExpression(False)		
 		except Exception, e:
 		    print "Error when creating speech recognition device proxy:"+str(e)
-	
+			
 		#INITIALISE ALICE
 		if(chat == True):
 			cwd = os.getcwd()
@@ -87,57 +86,49 @@ class getNaoSpeech:
 			os.chdir(cwd)					
 
 		#START WORDS DETECTION
-		try:	
+		try:
 			self.recoDevice.subscribe("MyModule")
 		except Exception, e:
 		    print "Error when creating speech recognition device proxy:"+str(e)
-		
+			
 	#SORT DICTINARY_____________________________________________________________________________
 	def getPredictedWords(self,predict,chat):
-		if(chat == False):
-			maxWord   = ""
-			maxProbab = 0
-			for(word,probab) in predict.items():
-				if(maxProbab<probab):
-					maxProbab = probab
-					maxWord   = word	
-			return maxWord
-		else:
-			predictedSent = ""
-			for(word,probab) in predict.items():
-				if(probab>self.threshold):
-					predictedSent += word+" "
-			predictedSent = predictedSent.strip()
-	    	return predictedSent
+		predictedSent = ""
+		for(word,probab) in predict.items():
+			if(probab>self.threshold):
+				predictedSent += word+" "
+		predictedSent = predictedSent.strip()
+		return predictedSent
 
 	#CHAT WITH NAO__________________________________________________________________________________
 	def naoChat(self,chat):
-		inputSpeech = self.memoryDevice.getData("WordRecognized",0)
+		inputSpeech    = self.memoryDevice.getData("WordRecognized")
+		predict        = {}
+		predictedWords = ""
 
-		print inputSpeech
-
-		predict     = {}
 		if(len(inputSpeech)>0):
 			for i in range(0,len(inputSpeech)):
 				if(i%2==1): #IF IT IS A PROBABILITY
 					predict[inputSpeech[i-1]] = inputSpeech[i]
 			predictedWords = self.getPredictedWords(predict,chat)
 
-			print predict
-			print predictedWords		
+			print str(inputSpeech)+" => "+predictedWords+"..."
 
-			if(predictedWords != self.oldInput):	 
-				#RESPOND TO THE INPUT
+			self.memoryDevice.removeData("WordRecognized")
+			self.memoryDevice.insertData("WordRecognized","")	 
+
+			if(predictedWords != self.oldInput):
 				self.oldInput = predictedWords
+
+				#RESPOND TO THE INPUT
 				if(chat == True):
 					aliceReply = self.aliceKernel.respond(predictedWords)
 					aliceReply.lower().replace("alice", "nao")
 					self.speechDevice.post.say(aliceReply)
-				else:
-					return predictedWords						
+		return predictedWords						
 
 	#STOP CHATTING___________________________________________________________________________________
-	def genSpeech(self, sentence):
+	def genSpeech(self,sentence):
 		self.speechDevice.post.say(sentence)
 
 	#STOP CHATTING___________________________________________________________________________________

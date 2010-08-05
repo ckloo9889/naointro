@@ -2,6 +2,7 @@ import sys
 from nao_config import *
 from get_nao_arm_moves import *
 from get_nao_head_moves import *
+from get_nao_walk import *
 from get_nao_speech import *
 
 
@@ -12,13 +13,12 @@ class NaoOpening:
 		self.nao1.initDevice()
 		self.nao1.initPos()
 	
-	def startDemo(self):
+	def startDemo1(self):
 		nao1Arm = getNaoArmMoves(self.nao1.ip, self.nao1.port)
 		nao1Arm.initDevice()
-		nao1Arm.initPos()
 		nao1Arm.initPosHoldBottle()
 		time.sleep(5)
-
+		'''
 		nao1Head = getNaoHeadMoves(self.nao1.ip, self.nao1.port)
 		nao1Head.initDevice()
 
@@ -37,9 +37,33 @@ class NaoOpening:
 		time.sleep(5)
 		nao1Arm.releaseBottle()
 
+		'''
 		self.nao1.stiffnessOff()
 
+	def startDemo2(self):
+		#nao1Speech = getNaoSpeech(self.nao1.ip, self.nao1.port,"Heather22Enhanced")
+		#nao1Speech.initDevice(False)
+		#nao1Speech.genSpeech("Hey Nao Get the fuck up")
+
+		nao1Leg = getNaoLegMoves(self.nao1.ip, self.nao1.port)
+		nao1Leg.initDevice()
+		nao1Arm = getNaoArmMoves(self.nao1.ip, self.nao1.port)
+		nao1Arm.initDevice()
+
+		
+		nao1Leg.kneelDown()
+		time.sleep(2)
+		nao1Arm.moveArmsInFront()
+		time.sleep(2)
+		nao1Leg.bendForward()
+		time.sleep(2)
+		nao1Leg.sitStraight()
+		time.sleep(2)
+		self.nao1.stiffnessOff()
+		
+				
 naoDemo = NaoOpening()
-naoDemo.startDemo()		
+#naoDemo.startDemo1()
+naoDemo.startDemo2()
 		
 		

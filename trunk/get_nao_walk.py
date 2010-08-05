@@ -7,9 +7,10 @@ import imghdr
 import os
 import sys
 import random
+import math
 #PATHS FOR NAO___________________________________________________________
-alPath = "/data/Documents/nao/lib"
-#alPath = "C:\Program Files\Aldebaran\Choregraphe 1.6.13\lib"
+#alPath = "/data/Documents/nao/lib"
+alPath = "C:\Program Files\Aldebaran\Choregraphe 1.6.13\lib"
 sys.path.append(alPath)
 import naoqi
 from naoqi import ALBroker
@@ -19,7 +20,7 @@ from naoqi import ALBehavior
 
 #_________________________________________________________________________
 #_________________________________________________________________________
-class getNaoWalk:
+class getNaoLegMoves:
 	def __init__(self, host, port):
 		self.host         = host # "192.168.0.80"
 		self.port         = port # 9559
@@ -64,6 +65,79 @@ class getNaoWalk:
 
 		self.motionDevice.post.walkTo(targetX, targetY, targetTheta)
 
+	def kneelDown(self):	
+		names  = "LHipPitch"
+		angleLists  = [-55]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+
+		names  = "LKneePitch"
+		angleLists  = [112]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		
+		names  = "LAnklePitch"
+		angleLists  = [-58.5]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+
+		names  = "RHipPitch"
+		angleLists  = [-55]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+
+		names  = "RKneePitch"
+		angleLists  = [112]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		
+		names  = "RAnklePitch"
+		angleLists  = [-58.5]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		
+	def bendForward(self):
+		names  = "LHipPitch"
+		angleLists  = [-95.0]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+ 	
+		names  = "RHipPitch"
+		angleLists  = [-95.0]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+
+	def sitStraight(self):			
+		names  = "LHipPitch"
+		angleLists  = [-55.0]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+ 	
+		names  = "RHipPitch"
+		angleLists  = [-55.0]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+					
 	#REMOVE THE STIFFNESS________________________________________________________________
 	def stiffnessOff(self):
 		#NAO MIGHT FALL!
