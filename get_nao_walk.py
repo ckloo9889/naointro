@@ -64,6 +64,7 @@ class getNaoLegMoves:
 		self.motionDevice.setMotionConfig([["ENABLE_FOOT_CONTACT_PROTECTION",True]])	
 
 		self.motionDevice.post.walkTo(targetX, targetY, targetTheta)
+		self.motionDevice.waitUntilWalkIsFinished()
 
 	def kneelDown(self):	
 		names  = "LHipPitch"
