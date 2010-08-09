@@ -31,7 +31,7 @@ class getNaoSpeech:
 		self.memoryDevice = None
 		self.aliceKernel  = None
 		self.oldInput     = ""
-		self.threshold    = 0.3
+		self.threshold    = 0.5
 		self.voice        = voice #"Heather22Enhanced"
 	
 	#INITIALIZE THE MOTION DEVICE__________________________________________________________________
@@ -68,9 +68,10 @@ class getNaoSpeech:
 				dictFile.close()
 				wordList = dictio.keys()
 			print wordList
-			self.recoDevice.setWordListAsVocabulary(wordList)	
+			self.recoDevice.setWordListAsVocabulary(wordList)
+			self.recoDevice.setParameter("EarUseSpeechDetector",2.0)		
 			self.recoDevice.setParameter("EarUseFilter",1.0)	
-			self.recoDevice.setParameter("EarSpeed",1.0)
+			self.recoDevice.setParameter("EarSpeed",2.0)
 			self.recoDevice.setVisualExpression(False)
 			self.recoDevice.setAudioExpression(False)		
 		except Exception, e:
@@ -111,20 +112,16 @@ class getNaoSpeech:
 				if(i%2==1): #IF IT IS A PROBABILITY
 					predict[inputSpeech[i-1]] = inputSpeech[i]
 			predictedWords = self.getPredictedWords(predict,chat)
-
-			print str(inputSpeech)+" => "+predictedWords+"..."
-
-			self.memoryDevice.removeData("WordRecognized")
-			self.memoryDevice.insertData("WordRecognized",["",0])	 
-
-			if(predictedWords != self.oldInput):
-				self.oldInput = predictedWords
-
-				#RESPOND TO THE INPUT
-				if(chat == True):
-					aliceReply = self.aliceKernel.respond(predictedWords)
-					aliceReply.lower().replace("alice", "nao")
-					self.speechDevice.post.say(aliceReply)
+			if(len(predictedWords)>0):
+				print str(inputSpeech)+" => "+predictedWords+"..."
+				self.memoryDevice.removeData("WordRecognized")
+				self.memoryDevice.insertData("WordRecognized",["",0])	 
+				if(predictedWords != self.oldInput):
+					self.oldInput = predictedWords
+					if(chat == True): #RESPOND TO THE INPUT
+						aliceReply = self.aliceKernel.respond(predictedWords)
+						aliceReply.lower().replace("alice", "nao")
+						self.speechDevice.post.say(aliceReply)
 		return predictedWords						
 
 	#STOP CHATTING___________________________________________________________________________________
