@@ -61,7 +61,7 @@ class getNaoSpeech:
 		try:
 			self.recoDevice.setLanguage("English")
 			if(chat == False): 
-				wordList = ["stand","up","go","nao"]
+				wordList = ["stand up","go nao"]
 			else:	
 				dictFile = open("dictionary.pkl", "rb")
 				dictio   = pickle.load(dictFile)
@@ -71,7 +71,7 @@ class getNaoSpeech:
 			self.recoDevice.setWordListAsVocabulary(wordList)
 			self.recoDevice.setParameter("EarUseSpeechDetector",2.0)		
 			self.recoDevice.setParameter("EarUseFilter",1.0)	
-			self.recoDevice.setParameter("EarSpeed",2.0)
+			self.recoDevice.setParameter("EarSpeed",3.0)
 			self.recoDevice.setVisualExpression(False)
 			self.recoDevice.setAudioExpression(False)		
 		except Exception, e:
