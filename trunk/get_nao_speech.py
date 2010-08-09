@@ -115,7 +115,7 @@ class getNaoSpeech:
 			print str(inputSpeech)+" => "+predictedWords+"..."
 
 			self.memoryDevice.removeData("WordRecognized")
-			self.memoryDevice.insertData("WordRecognized","")	 
+			self.memoryDevice.insertData("WordRecognized",["",0])	 
 
 			if(predictedWords != self.oldInput):
 				self.oldInput = predictedWords
