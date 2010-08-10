@@ -28,7 +28,6 @@ class getNaoArmMoves:
 		self.motionDevice = None
 		self.memoryDevice = None
 		self.speechDevice = None
-
 		self.stiffness    = 1.0
 		self.nrJoints     = 0
 
@@ -38,15 +37,22 @@ class getNaoArmMoves:
 		try:
 		    self.motionDevice = ALProxy("ALMotion", self.host, self.port)
 		except Exception, e:
-		    print "Error when creating motion device proxy:"+str(e)
-		    exit(1)
+		    print "Error when creating motion device proxy: "+str(e)
+			exit(1)
 
 		#MAKE NAO STIFF (OTHERWISE IT WON'T MOVE)
-		self.motionDevice.stiffnessInterpolation("Body",self.stiffness,1.0)
+		try:
+			self.motionDevice.stiffnessInterpolation("Body",self.stiffness,1.0)
+		except Exception, e:
+    		print "Error when making nao stiff: "+str(e)
 
 	#PUT NAO IN AN INITIAL POSITON (REQUIRED FOR ANY MOVEMENT)______________________________________
 	def initPos(self):
-		self.nrJoints = len(self.motionDevice.getJointNames("Body"))
+		try:
+			self.nrJoints = len(self.motionDevice.getJointNames("Body"))
+		except Exception, e:
+    		print "Error when getting the names of the body joints: "+str(e)
+
 		#DEFINE THE INITIAL POSITION
 		head     = [0, 0]
 		leftArm  = [90, 30, -45, -45]
@@ -66,203 +72,288 @@ class getNaoArmMoves:
 		#INITIALIZE POSITION
 		pName     = "Body"
 		pMaxSpeed = 0.2
-		self.motionDevice.angleInterpolationWithSpeed(pName, pTargetAngles, pMaxSpeed)	
+		try:
+			self.motionDevice.angleInterpolationWithSpeed(pName, pTargetAngles, pMaxSpeed)	
+		except Exception, e:
+    		print "Error when generating initial position: "+str(e)
 		time.sleep(1)
 
+	#HOLDING BOTTLE POSITON_____________________________________________________________________
 	def initPosHoldBottle(self):
 		names  = "LShoulderPitch"
 		angleLists  = [40]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-		
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when making nao hold the bottle(LShoulderPitch): "+str(e)
+
 		names  = "RShoulderPitch"
 		angleLists  = [40]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-		                
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when making nao hold the bottle(RShoulderPitch): "+str(e)
+                
 		names  = "LShoulderRoll"
 		angleLists  = [2.4]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-		
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when making nao hold the bottle(LShoulderRoll):"+str(e)
+
 		names  = "RShoulderRoll"
 		angleLists  = [-2.4]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-		
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when making nao hold the bottle(RShoulderRoll): "+str(e)
+
 		names  = "LWristYaw"
 		angleLists  = [-38.8]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-		
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when making nao hold the bottle(LWristYaw): "+str(e)
+
 		names  = "RWristYaw"
 		angleLists  = [38.8]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-		
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when making nao hold the bottle(RWristYaw): "+str(e)
+
 		names  = "LHand"
 		angleLists  = [49.9]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-		
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when making nao hold the bottle(LHand): "+str(e)
+
 		names  = "RHand"
 		angleLists  = [49.9]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-		
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when making nao hold the bottle(RHand): "+str(e)
+
+	#RELEASE THE BOTTLE MOVEMENT___________________________________________________________________________
 	def releaseBottle(self):
 		names  = "LShoulderPitch"
 		angleLists  = [103]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-		
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when making nao release the bottle(LShoulderPitch): "+str(e)
+
 		names  = "RShoulderPitch"
 		angleLists  = [103]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-		                
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when making nao release the bottle(RShoulderPitch): "+str(e)
+                
 		names  = "LShoulderRoll"
 		angleLists  = [35]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-		
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when making nao release the bottle(LShoulderRoll): "+str(e)
+
 		names  = "RShoulderRoll"
 		angleLists  = [-35]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-		
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when making nao release the bottle(RShoulderRoll): "+str(e)
+
 		names  = "LWristYaw"
 		angleLists  = [-38.8]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when making nao release the bottle(LWristYaw): "+str(e)
 		
 		names  = "RWristYaw"
 		angleLists  = [38.8]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when making nao release the bottle(RWristYaw): "+str(e)
 		
 		names  = "LHand"
 		angleLists  = [23]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-		
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when making nao release the bottle(LHand): "+str(e)
+
 		names  = "RHand"
 		angleLists  = [23]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when making nao release the bottle(RHand): "+str(e)
 
+	#MOVE ARMS IN FRONT OF THE BODY__________________________________________________________________________________
 	def moveArmsInFront(self):
 		names  = "LShoulderPitch"
 		angleLists  = [52.0]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when moving arms in front(LShoulderPitch): "+str(e)
 		
 		names  = "RShoulderPitch"
 		angleLists  = [52.0]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when moving arms in front(RShoulderPitch): "+str(e)
 		                
 		names  = "LShoulderRoll"
 		angleLists  = [2.4]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when moving arms in front(LShoulderRoll): "+str(e)
 		
 		names  = "RShoulderRoll"
 		angleLists  = [-2.4]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when moving arms in front(RShoulderRoll): "+str(e)
 		
 		names  = "LWristYaw"
 		angleLists  = [36.6]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when moving arms in front(LWristYaw): "+str(e)
 		
 		names  = "RWristYaw"
 		angleLists  = [-36.6]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when moving arms in front(RWristYaw): "+str(e)
 		
 		names  = "LElbowRoll"
 		angleLists  = [-65.0]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when moving arms in front(LElbowRoll): "+str(e)
 		
 		names  = "RElbowRoll"
 		angleLists  = [65.0]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when moving arms in front(RElbowRoll): "+str(e)
 
 		names  = "LHand"
 		angleLists  = [12.0]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when moving arms in front(LHand): "+str(e)
 		
 		names  = "RHand"
 		angleLists  = [12.0]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-		
-				
-		
-	#MOVE ARM BETWEEN 2 POSITIONS__________________________________________________________________
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+    		print "Error when moving arms in front(RHand): "+str(e)
+						
+	#MOVE LEFT ARM BETWEEN 2 POSITIONS__________________________________________________________________
 	def moveArm(self, dx, dy, dz, dwx, dwy, dwz, closeOpen):
 		#DO NOT FORGET TO INITIALIZE NAO'S POSITION!		
-		if(closeOpen == "close"):
-			self.motionDevice.post.closeHand('LHand')
-		else:
-			self.motionDevice.post.openHand('LHand')
+		try:
+			if(closeOpen == "close"):
+				self.motionDevice.post.closeHand('LHand')
+			else:
+				self.motionDevice.post.openHand('LHand')
+		except Exception, e:
+    		print "Error when closing/opening the hand: "+str(e)
 
 		effector   = "LArm"
 		space      = motion.SPACE_NAO
@@ -284,22 +375,28 @@ class getNaoArmMoves:
 		#GO TO THE TARGET POSITION ANF BACK AGAIN
 		path  = targetPos #[targetPos, currentPos]
 		times = 10.0 #TIME IN SECONDS
+		try:
+			self.motionDevice.post.positionInterpolation(effector, space, path, axisMask, times, isAbsolute)
+		except Exception, e:
+    		print "Error when moving the left arm between 2positions: "+str(e)
 
-		self.motionDevice.post.positionInterpolation(effector, space, path, axisMask, times, isAbsolute)
-		
 	#CHECK IF THERE IS SOMETHING IN THE HAND AND IF SO CLOSE IT______________________________________________
 	def grabObject(self):
 		#WAIT TO BE HANDED IN THE OBJECT
 		self.moveArm(0.2, -0.2, 0.5, 0.5, 0.9, 0.2, "open")
-
+		
 		#CONNECT TO A MEMORY PROXY
 		try:
 			self.memoryDevice = ALProxy("ALMemory", self.host, self.port)
 		except Exception, e:
 		    print "Error when creating memory device proxy:"+str(e)
 		    exit(1)
-		handBefore = self.memoryDevice.getData("FrontTactilTouched")
-		handAfter  = self.memoryDevice.getData("FrontTactilTouched")
+	
+		try:
+			handBefore = self.memoryDevice.getData("FrontTactilTouched")
+			handAfter  = self.memoryDevice.getData("FrontTactilTouched")
+		except Exception, e:
+    		print "Error when reading tactile data from memory: "+str(e)
 
 		#CONNECT TO A SPEECH PROXY
 		try:
@@ -308,14 +405,19 @@ class getNaoArmMoves:
 		    print "Error when creating speech device proxy:"+str(e)
 		    exit(1)
 		
-		while (handAfter == handBefore):
+		while(handAfter == handBefore):
 			time.sleep(2)
-			handAfter = self.memoryDevice.getData("FrontTactilTouched")
-			self.speechDevice.post.say("Hand in that microphone, will you?!")
+			try:
+				handAfter = self.memoryDevice.getData("FrontTactilTouched")
+			except Exception, e:
+    			print "Error when reading tactile data from memory: "+str(e)
+			try:
+				self.speechDevice.post.say("Hand in that microphone, will you?!")
+			except Exception, e:
+    			print "Error saying something: "+str(e)
 			break
 		self.moveArm(-1.3, 0.2, -0.7, 1.8, -0.2, -0.4, "close")
 			
-		
  	#MOVE ARM IN AN ELLIPSOIDAL MANNER__________________________________________________
 	def moveArmEllipse(self):
 		#DO NOT FORGET TO INITIALIZE NAO'S POSITION
@@ -333,7 +435,10 @@ class getNaoArmMoves:
 		axisMask   = 7 #JUST CONTROL POSITION
 		times      = [0.5, 1.0, 2.0, 3.0, 4.0, 4.5] #SECONDS
 		isAbsolute = False
-		self.motionDevice.positionInterpolation(effector, space, path, axisMask, times, isAbsolute)
+		try:
+			self.motionDevice.positionInterpolation(effector, space, path, axisMask, times, isAbsolute)
+		except Exception, e:
+    		print "Error when moving arm in an ellipsoidal way: "+str(e)
 
 
 
