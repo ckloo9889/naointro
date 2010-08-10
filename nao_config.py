@@ -23,17 +23,15 @@ class NaoConfig:
 	def __init__(self, host, port):
 		self.ip = host
 		self.port = port
-
 		self.host         = host # "192.168.0.80"
 		self.port         = port # 9559
 		self.motionDevice = None
 		self.memoryDevice = None
 		self.speechDevice = None
-
 		self.stiffness    = 1.0
 		self.nrJoints     = 0
-		
 
+	#INITIALIZE MOTION DEVICE____________________________________________________________________	
 	def initDevice(self):
 		#CONNECT TO A PROXY
 		try:
@@ -43,10 +41,18 @@ class NaoConfig:
 		    exit(1)
 
 		#MAKE NAO STIFF (OTHERWISE IT WON'T MOVE)
-		self.motionDevice.stiffnessInterpolation("Body",self.stiffness,1.0)
-
+		try:
+			self.motionDevice.stiffnessInterpolation("Body",self.stiffness,1.0)
+		except Exception, e:
+		    print "Error when making nao stiff: "+str(e)
+	
+	#INITIALIZE POSITION__________________________________________________________________________		
 	def initPos(self):
-		self.nrJoints = len(self.motionDevice.getJointNames("Body"))
+		try:
+			self.nrJoints = len(self.motionDevice.getJointNames("Body"))
+		except Exception, e:
+		    print "Error when getting the joints of nao: "+str(e)
+
 		#DEFINE THE INITIAL POSITION
 		head     = [0, 0]
 		leftArm  = [90, 30, -45, -45]
@@ -66,11 +72,18 @@ class NaoConfig:
 		#INITIALIZE POSITION
 		pName     = "Body"
 		pMaxSpeed = 0.2
-		self.motionDevice.angleInterpolationWithSpeed(pName, pTargetAngles, pMaxSpeed)	
+		try:
+			self.motionDevice.angleInterpolationWithSpeed(pName, pTargetAngles, pMaxSpeed)
+		except Exception, e:
+		    print "Error when intializing nao's position: "+str(e)
 		time.sleep(1)
 
-	#REMOVE THE STIFFNESS
+	#REMOVE THE STIFFNESS_________________________________________________________________________
 	def stiffnessOff(self):
 		#NAO MIGHT FALL!
-		self.motionDevice.stiffnessInterpolation("Body",0.0,1.0)
-				
+		try:
+			self.motionDevice.stiffnessInterpolation("Body",0.0,1.0)
+		except Exception, e:
+		    print "Error when removing the stiffness: "+str(e)
+
+					
