@@ -49,8 +49,11 @@ class getNaoSpeech:
 		except Exception, e:
 		    print "Error when creating speech device proxy:"+str(e)
 		    exit(1)
-		self.speechDevice.setVoice(self.voice)	
-		
+		try:
+			self.speechDevice.setVoice(self.voice)	
+		except Exception, e:
+		    print "Error when setting the voice: "+str(e)
+
 		#CONNECT TO A SPEECH RECOGNITION PROXY
 		try:
 		    self.recoDevice = ALProxy("ALSpeechRecognition", self.host, self.port)
@@ -69,9 +72,8 @@ class getNaoSpeech:
 				wordList = dictio.keys()
 			print wordList
 			self.recoDevice.setWordListAsVocabulary(wordList)
-			self.recoDevice.setParameter("EarUseSpeechDetector",2.0)		
 			self.recoDevice.setParameter("EarUseFilter",1.0)	
-			self.recoDevice.setParameter("EarSpeed",3.0)
+			self.recoDevice.setParameter("EarSpeed",2.0)
 			self.recoDevice.setVisualExpression(False)
 			self.recoDevice.setAudioExpression(False)		
 		except Exception, e:
@@ -90,47 +92,46 @@ class getNaoSpeech:
 		try:
 			self.recoDevice.subscribe("MyModule")
 		except Exception, e:
-		    print "Error when creating speech recognition device proxy:"+str(e)
+		    print "Error when starting the speech recognition: "+str(e)
 			
-	#SORT DICTINARY_____________________________________________________________________________
-	def getPredictedWords(self,predict,chat):
-		predictedSent = ""
-		for(word,probab) in predict.items():
-			if(probab>self.threshold):
-				predictedSent += word+" "
-		predictedSent = predictedSent.strip()
-		return predictedSent
-
 	#CHAT WITH NAO__________________________________________________________________________________
 	def naoChat(self,chat):
-		inputSpeech    = self.memoryDevice.getData("WordRecognized")
-		predict        = {}
-		predictedWords = ""
+		try:
+			inputSpeech = self.memoryDevice.getData("WordRecognized",0)
+		except Exception, e:
+		    print "Error when reading reacognized word: "+str(e)
 
-		if(len(inputSpeech)>0):
-			for i in range(0,len(inputSpeech)):
-				if(i%2==1): #IF IT IS A PROBABILITY
-					predict[inputSpeech[i-1]] = inputSpeech[i]
-			predictedWords = self.getPredictedWords(predict,chat)
-			if(len(predictedWords)>0):
-				print str(inputSpeech)+" => "+predictedWords+"..."
-				self.memoryDevice.removeData("WordRecognized")
-				self.memoryDevice.insertData("WordRecognized",["",0])	 
-				if(predictedWords != self.oldInput):
-					self.oldInput = predictedWords
-					if(chat == True): #RESPOND TO THE INPUT
-						aliceReply = self.aliceKernel.respond(predictedWords)
-						aliceReply.lower().replace("alice", "nao")
-						self.speechDevice.post.say(aliceReply)
+		predictedWords = ""
+		if(inputSpeech[1] >= self.threshold):
+			predictedWord = inputSpeech[0]
+		try:
+			self.memoryDevice.insertData("WordRecognized",["",0])
+		except Exception, e:
+		    print "Error when overwriting the reacognized word: "+str(e)
+
+		if(len(predictedWords)>0):
+			print predictedWords
+			if(predictedWords != self.oldInput):
+				self.oldInput = predictedWords
+				if(chat == True): #RESPOND TO THE INPUT
+					aliceReply = self.aliceKernel.respond(predictedWords)
+					aliceReply.lower().replace("alice", "nao")
+					self.genSpeech(aliceReply)
 		return predictedWords						
 
-	#STOP CHATTING___________________________________________________________________________________
+	#SAY A SENTENCE___________________________________________________________________________________
 	def genSpeech(self,sentence):
-		self.speechDevice.post.say(sentence)
+		try:
+			self.speechDevice.post.say(sentence)
+		except Exception, e:
+		    print "Error when saying a sentence: "+str(e)
 
 	#STOP CHATTING___________________________________________________________________________________
 	def stopSpeechReco(self):
 		time.sleep(2)
-		self.recoDevice.unsubscribe("MyModule") 
+		try:
+			self.recoDevice.unsubscribe("MyModule") 
+		except Exception, e:
+		    print "Error when stopping the speech recognition: "+str(e)
 
 
