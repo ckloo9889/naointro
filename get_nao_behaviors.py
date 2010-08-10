@@ -26,20 +26,40 @@ class getNaoBehaviors:
 		self.frame    = None
 		self.motion   = None
 		#SET PATH TO BEHAVIORS IN NAO'S HEAD
-		self.basePath = "/data/Documents/nao/projects/" #"/home/nao/behaviors/" 
+		self.basePath = "/home/nao/behaviors/" #"/data/Documents/nao/projects/" 
 
 	#INITIALIZE THE VIDEO DEVICE_____________________________________________
 	def initDevice(self):
-		self.frame  = ALProxy("ALFrameManager", self.host, self.port)
-		self.motion = ALProxy("ALMotion", self.host, self.port)
+		try:
+			self.frame  = ALProxy("ALFrameManager", self.host, self.port)
+		except Exception, e:
+		    print "Error when creating the frame manager device: "+str(e)
+			exit(1)
 
+		try:
+			self.motion = ALProxy("ALMotion", self.host, self.port)
+		except Exception, e:
+		    print "Error when creating the motion device: "+str(e)
+			exit(1)
+		
 	#CALL THE NEEDED BEHAVIOR________________________________________________
 	def callBehavior(self,what):
 		gesture_path = self.basePath + what
-		gesture_id   = self.frame.newBehaviorFromFile(gesture_path, "")
+		try:
+			gesture_id   = self.frame.newBehaviorFromFile(gesture_path, "")
+		except Exception, e:
+		    print "Error when reading the behavior from file: "+str(e)
 
-		self.motion.stiffnessInterpolation("Body", 1.0, 1.0) 
-		self.frame.playBehavior(gesture_id)
-		self.frame.completeBehavior(gesture_id) # ... what does it do?
+		try:
+			self.motion.stiffnessInterpolation("Body", 1.0, 1.0)
+		except Exception, e:
+		    print "Error when making the body stiff: "+str(e)
+
+ 		try:
+			self.frame.playBehavior(gesture_id)
+			self.frame.completeBehavior(gesture_id) # ... what does it do?
+		except Exception, e:
+		    print "Error when playing the behavior: "+str(e)
+	
 		
 
