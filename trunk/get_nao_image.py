@@ -36,13 +36,19 @@ class getNaoImage:
 		    exit(1)
 
 		#SUBSCRIBE GVM TO VIM
-		self.gvm = self.videoDevice.subscribe("GVM", 0, 13, 1) # ... parameters?
+		try:
+			self.gvm = self.videoDevice.subscribe("GVM", 0, 13, 1) # ... parameters?
+		except Exception, e:
+		    print "Error when starting the video device:"+str(e)
 
 	#RETRIEVE IMAGES__________________________________________________________
 	def getImage(self):
 		#GET THE IMAGE BYTES
-	    result = self.videoDevice.getImageRemote(self.gvm)
-		
+		try:
+	 		result = self.videoDevice.getImageRemote(self.gvm)
+		except Exception, e:
+		    print "Error when getting the images: "+str(e)
+
 		#PROCESS RESULT TO GET THE IMAGE
     	imString = result[6]
     	columns  = result[0]
@@ -57,7 +63,10 @@ class getNaoImage:
  	#CLOSE VIDEO DEVICE_________________________________________________________
 	def closeDevice(self):
     	#UNSUBSCRIBE THE IMAGE DEVICE - UNSUBSCRIBE SVM TO VIM
-		self.videoDevice.unsubscribe(self.gvm)
+		try:
+			self.videoDevice.unsubscribe(self.gvm)
+		except Exception, e:
+		    print "Error when stopping the video device:"+str(e)
 
 
 
