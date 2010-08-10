@@ -28,7 +28,6 @@ class getNaoArmMoves:
 		self.motionDevice = None
 		self.memoryDevice = None
 		self.speechDevice = None
-		self.stiffness    = 1.0
 		self.nrJoints     = 0
 
 	#INITIALIZE THE MOTION DEVICE__________________________________________________________________
@@ -39,44 +38,6 @@ class getNaoArmMoves:
 		except Exception, e:
 		    print "Error when creating motion device proxy: "+str(e)
 			exit(1)
-
-		#MAKE NAO STIFF (OTHERWISE IT WON'T MOVE)
-		try:
-			self.motionDevice.stiffnessInterpolation("Body",self.stiffness,1.0)
-		except Exception, e:
-    		print "Error when making nao stiff: "+str(e)
-
-	#PUT NAO IN AN INITIAL POSITON (REQUIRED FOR ANY MOVEMENT)______________________________________
-	def initPos(self):
-		try:
-			self.nrJoints = len(self.motionDevice.getJointNames("Body"))
-		except Exception, e:
-    		print "Error when getting the names of the body joints: "+str(e)
-
-		#DEFINE THE INITIAL POSITION
-		head     = [0, 0]
-		leftArm  = [90, 30, -45, -45]
-		leftLeg  = [0, 0, -10, 20, -10, 0]
-		rightLeg = [0, 0, -10, 20, -10, 0]
-		rightArm = [90, -30, 45, 45]
-
-		#ADD ANGLES FOR WRIST AND HAND
-		if(self.nrJoints == 26):
-			leftArm  += [-90, 10]
- 			rightArm += [90, 10]
-		pTargetAngles = head + leftArm + leftLeg + rightLeg + rightArm  
-
-		#CONVERT TO RADIANS
-		pTargetAngles = [x * (math.pi/180.0) for x in pTargetAngles]
-		
-		#INITIALIZE POSITION
-		pName     = "Body"
-		pMaxSpeed = 0.2
-		try:
-			self.motionDevice.angleInterpolationWithSpeed(pName, pTargetAngles, pMaxSpeed)	
-		except Exception, e:
-    		print "Error when generating initial position: "+str(e)
-		time.sleep(1)
 
 	#HOLDING BOTTLE POSITON_____________________________________________________________________
 	def initPosHoldBottle(self):
