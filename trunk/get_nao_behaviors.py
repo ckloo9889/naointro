@@ -50,11 +50,7 @@ class getNaoBehaviors:
 		except Exception, e:
 		    print "Error when reading the behavior from file: "+str(e)
 
-		try:
-			self.motion.stiffnessInterpolation("Body", 1.0, 1.0)
-		except Exception, e:
-		    print "Error when making the body stiff: "+str(e)
-
+		#THE BODY NEEDS TO BE STIFF BEFORE PLAYING THE BAHVIORS!
  		try:
 			self.frame.playBehavior(gesture_id)
 			self.frame.completeBehavior(gesture_id) # ... what does it do?
