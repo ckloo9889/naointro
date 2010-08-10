@@ -26,7 +26,6 @@ class getNaoLegMoves:
 		self.port         = port # 9559
 		self.motionDevice = None
 		self.gvm          = None
-		self.stiffness    = 1.0
 
 	#INITIALIZE THE VIDEO DEVICE_____________________________________________
 	def initDevice(self):
@@ -36,12 +35,6 @@ class getNaoLegMoves:
 		except Exception, e:
 		    print "Error when creating motion device proxy:"+str(e)
 		    exit(1)
-
-		#MAKE NAO STIFF (OTHERWISE IT WON'T MOVE)
-		try:
-			self.motionDevice.stiffnessInterpolation("Body",self.stiffness,1.0)
-		except Exception, e:
-		    print "Error when creating making nao stiff: "+str(e)
 
 	#WALK IN A DIRECTION_______________________________________________________
 	def walkDirection(self, targetX, targetY, targetTheta):
@@ -200,15 +193,6 @@ class getNaoLegMoves:
 		except Exception, e:
 		    print "Error in sitStraight (RHipPitch): "+str(e)
 					
-	#REMOVE THE STIFFNESS________________________________________________________________
-	def stiffnessOff(self):
-		#NAO MIGHT FALL!
-		try:
-			self.motionDevice.stiffnessInterpolation("Body",0.0,1.0)
-		except Exception, e:
-		    print "Error when removing the stiffness: "+str(e)
-		
-
 
 
 
