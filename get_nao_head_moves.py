@@ -28,7 +28,6 @@ class getNaoHeadMoves:
 		self.motionDevice = None
 		self.memoryDevice = None
 		self.speechDevice = None
-		self.stiffness    = 1.0
 		self.nrJoints     = 0
 
 	#INITIALIZE THE MOTION DEVICE__________________________________________________________________
@@ -39,12 +38,6 @@ class getNaoHeadMoves:
 		except Exception, e:
 		    print "Error when creating motion device proxy:"+str(e)
 		    exit(1)
-
-		#MAKE NAO STIFF (OTHERWISE IT WON'T MOVE)
-		try:
-			self.motionDevice.stiffnessInterpolation("Body",self.stiffness,1.0)
-		except Exception, e:
-		    print "Error when making nao stiff: "+str(e)
 
 	#MOVE HEAD YAW_________________________________________________________________________________
 	def moveHeadYawAbs(self, pTargetAngles, timeLists):
