@@ -7,120 +7,125 @@ from get_nao_head_moves import *
 from get_nao_walk import *
 from get_nao_speech import *
 from get_nao_behaviors import *
-
+#__________________________________________________________________________________________
+#__________________________________________________________________________________________
 class NaoOpening:
 	def __init__(self):
-		self.nao1 = NaoConfig("192.168.0.87", 9559)
-		#self.nao1 = NaoConfig("127.0.0.1", 9559)
+		self.nao1       = NaoConfig("192.168.0.87", 9559) #"127.0.0.1", 9559
+		self.nao1Speech = getNaoSpeech(self.nao1.ip, self.nao1.port, "Kenny22Enhanced")
+		self.nao1Speech.initDevice(False)
+		self.nao1Arm    = getNaoArmMoves(self.nao1.ip, self.nao1.port)
+		self.nao1Arm.initDevice()
+		self.nao1Head   = getNaoHeadMoves(self.nao1.ip, self.nao1.port)
+		self.nao1Head.initDevice()
+		self.nao1Legs   = getNaoLegMoves(self.nao1.ip, self.nao1.port)
+		self.nao1Legs.initDevice()
 
-		self.nao2 = NaoConfig("192.168.0.80", 9559)
-		#self.nao2 = NaoConfig("127.0.0.1", 9559)
-		#self.nao2.initDevice()
-		#self.nao2.initPos()
-		
-		#nao2Behave = getNaoBehaviors(self.nao2.ip, self.nao2.port)
-		#nao2Behave.initDevice()
-		#nao2Behave.callBehavior("sitdown")
+		self.nao2         = NaoConfig("192.168.0.80", 9559) #"127.0.0.1", 9559
+		self.nao2Speech   = getNaoSpeech(self.nao2.ip, self.nao2.port, "Heather22Enhanced")
+		self.nao2Speech.initDevice(False)
+		self.nao2Legs     = getNaoLegMoves(self.nao2.ip, self.nao2.port)
+		self.nao2Legs.initDevice()
+		self.nao2Behavior = getNaoBehaviors(self.nao2.ip, self.nao2.port)
+		self.nao2Behavior.initDevice()
 
-		
+	#SEND NAOS TO THE INITIAL POSITIONS IN THE SPACE_____________________________________________	
 	def initDemo(self):
 		self.nao1.initDevice()
 		self.nao1.initPos()
 		self.nao2.initDevice()
 		self.nao2.initPos()
 		
-		#INIT LEGS NAO 1
-		nao1Legs = getNaoLegMoves(self.nao1.ip, self.nao1.port)
-		nao1Legs.initDevice()
-		#INIT LEGS NAO 2
-		nao2Legs = getNaoLegMoves(self.nao2.ip, self.nao2.port)
-		nao2Legs.initDevice()
-		"""
 		lockNaos = thread.allocate_lock()
 		lockNaos.acquire(1)
 		try:
-			thread.start_new_thread(nao1Legs.walkTo, (0.3,0.3,0))
-			thread.start_new_thread(nao2Legs.walkTo, (0.3,-0.3,0))
+			thread.start_new_thread(self.nao1Legs.walkTo, (0.3,0.3,0))
+			thread.start_new_thread(self.nao2Legs.walkTo, (0.3,-0.3,0))
 		except Exception,e:
-			print "error in walking to initial position "+str(e)	
+			print "error in threading while walking to initial position "+str(e)	
 			lockNaos.release()
 		lockNaos.release()		
+			
+		#NAO2 IS SITTING
+		self.nao2Behavior.callBehavior("sitdown")
+
+		#NAO1 IS HOLDING A BOTTLE
+		self.nao1Arm.initPosHoldBottle()
+
+	#MAKE NAO2(RED) WALK TO NAO1(BLUE)_______________________________________________________________________________					
+	def nao2Walk2Nao1(self):
+		posNao1 = self.nao1Legs.motionDevice.getRobotPosition(True)	
+		posNao2 = self.nao2Legs.motionDevice.getRobotPosition(True)
 		
-		self.nao2Walk2Nao1(nao1Legs,nao2Legs)
-		"""	
-		
-		self.nao1.stiffnessOff()
-		self.nao2.stiffnessOff()
-		
-		
-						
-	def nao2Walk2Nao1(self,nao1Legs,nao2Legs):
-		#name           = "CameraTop"
-		#space          = 2
-		#useSensorValue = True
-		#result1 = nao1Legs.motionDevice.getPosition(name,space,useSensorValue)	
-		#result2 = nao2Legs.motionDevice.getPosition(name,space,useSensorValue)	
-		posNao1 = nao1Legs.motionDevice.getRobotPosition(True)	
-		posNao2 = nao2Legs.motionDevice.getRobotPosition(True)
-		print posNao1
-		print posNao2
-		
+		print "BLUE NAO >> "+str(posNao1)
+		print "RED NAO >> "+str(posNao2)
 		
 		nao2Legs.walkTo(math.fabs(posNao1[0]-posNao2[0])-0.1,
 						math.fabs(posNao1[1]-posNao2[1]),
 						math.fabs(posNao1[2]-posNao2[2]))
-		try:	
-			nao2Legs.motionDevice.waitUntilWalkIsFinished()
-		except Exception, e:
-			print "Error when waiting until the walk is finished:"+str(e)
-					
-	def startDemo1(self):
-		
-	
-		'''
-		nao1Arm = getNaoArmMoves(self.nao1.ip, self.nao1.port)
-		nao1Arm.initDevice()
-		nao1Arm.initPosHoldBottle()
-		time.sleep(5)
-		nao1Head = getNaoHeadMoves(self.nao1.ip, self.nao1.port)
-		nao1Head.initDevice()
 
-		nao1Speech = getNaoSpeech(self.nao1.ip, self.nao1.port,"Heather22Enhanced")
-		nao1Speech.initDevice(False)
+	#DEMO1: RELEASE BOTTLE__________________________________________________________________________________										
+	def startDemo1(self):
 		time.sleep(3)
-		nao1Speech.genSpeech("Hey Nao Get up")
+
+		#NAO1 CALLS FOR NAO2
+		self.nao1Speech.genSpeech("Hey Nao Get up")
 		time.sleep(1)
-		nao1Speech.genSpeech("Holiday is over Get up")
+		self.nao1Speech.genSpeech("Holiday is over Get up")
 		time.sleep(1)
-		nao1Head.moveHeadYawAbs([90],[2.0])
+		self.nao1Head.moveHeadYawAbs([90],[2.0])
 		time.sleep(1)
-		nao1Speech.genSpeech("Nao wont get up, can you all together ask him to get up on my count of three?")
+		self.nao1Speech.genSpeech("Nao wont get up, can you all together ask him to get up on my count of three?")
 		time.sleep(1)
-		nao1Speech.genSpeech("1 2 3")
+		self.nao1Speech.genSpeech("1 2 3")
+		
+		#REPLACE THIS WITH RECOGNITION!!!!!
 		time.sleep(5)
+
+		#NAO2 GETS UP AND WALKS TO NAO1
+		self.nao2Walk2Nao1()
+
+		#NAO2 RECOGNIZES IF THE CROWD SAID "GO" & NAO1 RELEASES THE BOTTLE		
+		self.nao2Speech.genSpeech("what's up? What are you holding that bottle for?")
+		time.sleep(1)
+		self.nao1Speech.genSpeech("We have to open the new Informatics institute today!")
+		time.sleep(1)
+		self.nao2Speech.genSpeech("How do we do that?")
+		time.sleep(1)
+		
+		#NAO1 POINTS TOWARS AIBO ?!?!
+	
+		self.nao1Speech.genSpeech("All we have to do is hit that button over there")
+		time.sleep(1)
+		self.nao2Speech.genSpeech("OK then go!")
+		time.sleep(3)
+		self.nao2Speech.genSpeech("I can't hear you!")
+		time.sleep(1)
+		self.nao2Speech.genSpeech("we NEED to say go all together after 3")
+		time.sleep(1)
+		self.nao2Speech.genSpeech("1 2 3")
+
+		#REPLACE THIS WITH RECOGNITION!!!!!		
+		time.sleep(5)
+
+		#NAO1 RELEASES THE BOTTLE
 		nao1Arm.releaseBottle()
 
-		nao1Legs  = getNaoLegMoves(self.nao1.ip, self.nao1.port)
-		nao1Legs.initDevice()
-		nao2Legs  = getNaoLegMoves(self.nao2.ip, self.nao2.port)
-		nao2Legs.initDevice()
-		self.nao2Walk2Nao1(nao1Legs,nao2Legs)
-		#self.nao1.stiffnessOff()
-		'''
-		
-		
+		self.nao1.stiffnessOff()
+		self.nao2.stiffnessOff()
 
+	#DEMO2: NAO1 & NAO2 TRY TO PUSH THE BUTTON_________________________________________________________________
 	def startDemo2(self):
-		#nao1Speech = getNaoSpeech(self.nao1.ip, self.nao1.port,"Heather22Enhanced")
-		#nao1Speech.initDevice(False)
-		#nao1Speech.genSpeech("Hey Nao Get the fuck up")
+		"""
+		nao1Speech = getNaoSpeech(self.nao1.ip, self.nao1.port,"Heather22Enhanced")
+		nao1Speech.initDevice(False)
+		nao1Speech.genSpeech("Hey Nao Get the fuck up")
 
 		nao1Leg = getNaoLegMoves(self.nao1.ip, self.nao1.port)
 		nao1Leg.initDevice()
 		nao1Arm = getNaoArmMoves(self.nao1.ip, self.nao1.port)
 		nao1Arm.initDevice()
 
-		
 		nao1Leg.kneelDown()
 		time.sleep(2)
 		nao1Arm.moveArmsInFront()
@@ -130,7 +135,7 @@ class NaoOpening:
 		nao1Leg.sitStraight()
 		time.sleep(2)
 		self.nao1.stiffnessOff()
-		
+		"""
 				
 naoDemo = NaoOpening()
 naoDemo.initDemo()
