@@ -38,116 +38,178 @@ class getNaoLegMoves:
 		    exit(1)
 
 		#MAKE NAO STIFF (OTHERWISE IT WON'T MOVE)
-		self.motionDevice.stiffnessInterpolation("Body",self.stiffness,1.0)
+		try:
+			self.motionDevice.stiffnessInterpolation("Body",self.stiffness,1.0)
+		except Exception, e:
+		    print "Error when creating making nao stiff: "+str(e)
 
 	#WALK IN A DIRECTION_______________________________________________________
 	def walkDirection(self, targetX, targetY, targetTheta):
 		#ENABLE ARMS MOVEMENT DURING WALKING
-		self.motionDevice.setWalkArmsEnable(True,True)
-		
+		try:
+			self.motionDevice.setWalkArmsEnable(True,True)
+		except Exception, e:
+		    print "Error when enabling the hands during the walk: "+str(e)
+
 		#ENABLE FOOT CONTACT PROTETCTION
-		self.motionDevice.setMotionConfig([["ENABLE_FOOT_CONTACT_PROTECTION",True]])	
+		try:
+			self.motionDevice.setMotionConfig([["ENABLE_FOOT_CONTACT_PROTECTION",True]])	
+		except Exception, e:
+		    print "Error when enabling the foot protection: "+str(e)
 
 		frequency = 1.0 #MAXIMUM SPEED
-		self.motionDevice.post.setWalkTargetVelocity(targetX, targetY, targetTheta, frequency)
-		
+		try:
+			self.motionDevice.post.setWalkTargetVelocity(targetX, targetY, targetTheta, frequency)
+		except Exception, e:
+		    print "Error when generating the walking on a direction: "+str(e)
+	
 		#WALK FOR 5 SECONDS (OTHERWISE IT WON'T STOP)
 		time.sleep(5.0)
-		self.motionDevice.setWalkTargetVelocity(0.0, 0.0, 0.0, 0.0)
+		try:
+			self.motionDevice.setWalkTargetVelocity(0.0, 0.0, 0.0, 0.0)
+		except Exception, e:
+		    print "Error when stopping the walking on a direction: "+str(e)
 
 	#WALK TO A TARGET___________________________________________________________
 	def walkTo(self, targetX, targetY, targetTheta):
 		#ENABLE ARMS MOVEMENT DURING WALKING
-		self.motionDevice.setWalkArmsEnable(True,True)
-		
+		try:
+			self.motionDevice.setWalkArmsEnable(True,True)
+		except Exception, e:
+		    print "Error when enabling the hands during the walk: "+str(e)
+	
 		#ENABLE FOOT CONTACT PROTETCTION
-		self.motionDevice.setMotionConfig([["ENABLE_FOOT_CONTACT_PROTECTION",True]])	
+		try:
+			self.motionDevice.setMotionConfig([["ENABLE_FOOT_CONTACT_PROTECTION",True]])	
+		except Exception, e:
+		    print "Error when enabling the foot protection: "+str(e)
 
-		self.motionDevice.post.walkTo(targetX, targetY, targetTheta)
-		self.motionDevice.waitUntilWalkIsFinished()
+		try:
+			self.motionDevice.post.walkTo(targetX, targetY, targetTheta)
+		except Exception, e:
+		    print "Error when walking to a target: "+str(e)
 
+		try:
+			self.motionDevice.waitUntilWalkIsFinished()
+		except Exception, e:
+		    print "Error when waiting for the walk to finish: "+str(e)
+
+	#KNEEL DOWN MOTION_____________________________________________________________________________
 	def kneelDown(self):	
-		names  = "LHipPitch"
-		angleLists  = [-55]
-		timeLists   = [1.0]
-		isAbsolute  = True
+		names      = "LHipPitch"
+		angleLists = [-55]
+		timeLists  = [1.0]
+		isAbsolute = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:	
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+		    print "Error in kneelDown (LHipPitch): "+str(e)
 
-		names  = "LKneePitch"
-		angleLists  = [112]
-		timeLists   = [1.0]
-		isAbsolute  = True
+		names      = "LKneePitch"
+		angleLists = [112]
+		timeLists  = [1.0]
+		isAbsolute = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-		
-		names  = "LAnklePitch"
-		angleLists  = [-58.5]
-		timeLists   = [1.0]
-		isAbsolute  = True
-		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+		    print "Error in kneelDown (LKneePitch): "+str(e)
 
-		names  = "RHipPitch"
-		angleLists  = [-55]
-		timeLists   = [1.0]
-		isAbsolute  = True
+		names      = "LAnklePitch"
+		angleLists = [-58.5]
+		timeLists  = [1.0]
+		isAbsolute = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+		    print "Error in kneelDown (LAnklePitch): "+str(e)
 
-		names  = "RKneePitch"
-		angleLists  = [112]
-		timeLists   = [1.0]
-		isAbsolute  = True
+		names      = "RHipPitch"
+		angleLists = [-55]
+		timeLists  = [1.0]
+		isAbsolute = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+		    print "Error in kneelDown (RHipPitch): "+str(e)
 		
-		names  = "RAnklePitch"
-		angleLists  = [-58.5]
-		timeLists   = [1.0]
-		isAbsolute  = True
+
+		names      = "RKneePitch"
+		angleLists = [112]
+		timeLists  = [1.0]
+		isAbsolute = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+		    print "Error in kneelDown (RKneePitch): "+str(e)
 		
+
+		names      = "RAnklePitch"
+		angleLists = [-58.5]
+		timeLists  = [1.0]
+		isAbsolute = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+		    print "Error in kneelDown (RAnklePitch): "+str(e)
+	
+	#BEND FORWARD MOTION______________________________________________________________________________	
 	def bendForward(self):
-		names  = "LHipPitch"
-		angleLists  = [-95.0]
-		timeLists   = [1.0]
-		isAbsolute  = True
+		names      = "LHipPitch"
+		angleLists = [-95.0]
+		timeLists  = [1.0]
+		isAbsolute = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+		    print "Error in bendForward (LHipPitch): "+str(e)
  	
 		names  = "RHipPitch"
 		angleLists  = [-95.0]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+		    print "Error in bendForward (RHipPitch): "+str(e)
 
+	#SIT STRAIGHT______________________________________________________________________________________ 
 	def sitStraight(self):			
-		names  = "LHipPitch"
-		angleLists  = [-55.0]
-		timeLists   = [1.0]
-		isAbsolute  = True
+		names      = "LHipPitch"
+		angleLists = [-55.0]
+		timeLists  = [1.0]
+		isAbsolute = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+		    print "Error in sitStraight (LHipPitch): "+str(e)
  	
-		names  = "RHipPitch"
-		angleLists  = [-55.0]
-		timeLists   = [1.0]
-		isAbsolute  = True
+		names      = "RHipPitch"
+		angleLists = [-55.0]
+		timeLists  = [1.0]
+		isAbsolute = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
-		self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+		    print "Error in sitStraight (RHipPitch): "+str(e)
 					
 	#REMOVE THE STIFFNESS________________________________________________________________
 	def stiffnessOff(self):
 		#NAO MIGHT FALL!
-		if(not self.motionDevice.walkIsActive()):
+		try:
 			self.motionDevice.stiffnessInterpolation("Body",0.0,1.0)
-		else:
-			self.motionDevice.waitUntilWalkIsFinished()
-			self.motionDevice.stiffnessInterpolation("Body",0.0,1.0)
-
+		except Exception, e:
+		    print "Error when removing the stiffness: "+str(e)
+		
 
 
 
