@@ -46,7 +46,7 @@ class getNaoBehaviors:
 	def callBehavior(self,what):
 		gesture_path = self.basePath + what
 		try:
-			gesture_id   = self.frame.newBehaviorFromFile(gesture_path, "")
+			gesture_id   = self.frame.newBehaviorFromFile(gesture_path+"/behavior.xar", "")
 		except Exception, e:
 			print "Error when reading the behavior from file: "+str(e)
 
