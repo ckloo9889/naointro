@@ -76,7 +76,7 @@ class getNaoSpeech:
 			self.recoDevice.setVisualExpression(False)
 			self.recoDevice.setAudioExpression(False)		
 		except Exception, e:
-		    print "Error when creating speech recognition device proxy:"+str(e)
+		    print "Error when setting the paqrameters for speech recognition device: "+str(e)
 			
 		#INITIALISE ALICE
 		if(chat == True):

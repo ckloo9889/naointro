@@ -164,7 +164,7 @@ class getNaoArmMoves:
 		#RELEASE THE BOTTLE MOVEMENT___________________________________________________________________________
 	def releaseBottle(self):
 		names  = "LShoulderPitch"
-		angleLists  = [103]
+		angleLists  = [77]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
@@ -174,7 +174,7 @@ class getNaoArmMoves:
 			print "Error when making nao release the bottle(LShoulderPitch): "+str(e)
 
 		names  = "RShoulderPitch"
-		angleLists  = [103]
+		angleLists  = [77]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]

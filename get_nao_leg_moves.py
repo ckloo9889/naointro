@@ -70,7 +70,7 @@ class getNaoLegMoves:
 			self.motionDevice.setWalkArmsEnable(True,True)
 		except Exception, e:
 			print "Error when enabling the hands during the walk: "+str(e)
-	
+		
 		#ENABLE FOOT CONTACT PROTETCTION
 		try:
 			self.motionDevice.setMotionConfig([["ENABLE_FOOT_CONTACT_PROTECTION",True]])	
