@@ -30,8 +30,7 @@ class getNaoSpeech:
 		self.recoDevice   = None
 		self.memoryDevice = None
 		self.aliceKernel  = None
-		self.oldInput     = ""
-		self.threshold    = 0.5
+		self.threshold    = 0.0
 		self.voice        = voice #"Heather22Enhanced"
 	
 	#INITIALIZE THE MOTION DEVICE__________________________________________________________________
@@ -94,6 +93,15 @@ class getNaoSpeech:
 		except Exception, e:
 		    print "Error when starting the speech recognition: "+str(e)
 			
+	#GET WORDS SAID WITH THE PROBABILITY____________________________________________________________
+	def recoWords(self,dictio):
+		predictedWord = ""
+		for (word,probab) in dictio.items():	
+			if(probab >= self.threshold):
+				predictedWord += word+" "
+		predictedWord = predictedWord.strip()
+		return predictedWord
+
 	#CHAT WITH NAO__________________________________________________________________________________
 	def naoChat(self,chat):
 		try:
@@ -101,22 +109,25 @@ class getNaoSpeech:
 		except Exception, e:
 		    print "Error when reading reacognized word: "+str(e)
 
-		predictedWords = ""
-		if(inputSpeech[1] >= self.threshold):
-			predictedWord = inputSpeech[0]
+		dictio = {}
+		if(len(inputSpeech)>=2):
+			for i in range(0,len(inputSpeech)):	
+				if(i%2 == 1):
+					dictio[inputSpeech[i-1]] = inputSpeech[i]
+		predictedWords = self.recoWords(dictio)
+
 		try:
+			self.memoryDevice.removeData("WordRecognized")
 			self.memoryDevice.insertData("WordRecognized",["",0])
 		except Exception, e:
 		    print "Error when overwriting the reacognized word: "+str(e)
 
 		if(len(predictedWords)>0):
-			print predictedWords
-			if(predictedWords != self.oldInput):
-				self.oldInput = predictedWords
-				if(chat == True): #RESPOND TO THE INPUT
-					aliceReply = self.aliceKernel.respond(predictedWords)
-					aliceReply.lower().replace("alice", "nao")
-					self.genSpeech(aliceReply)
+			print str(inputSpeech)+"..."+predictedWords
+			if(chat == True): #RESPOND TO THE INPUT
+				aliceReply = self.aliceKernel.respond(predictedWords)
+				aliceReply.lower().replace("alice", "nao")
+				self.genSpeech(aliceReply)
 		return predictedWords						
 
 	#SAY A SENTENCE___________________________________________________________________________________
