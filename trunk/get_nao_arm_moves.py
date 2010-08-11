@@ -62,7 +62,7 @@ class getNaoArmMoves:
 			print "Error when making nao hold the bottle(RShoulderPitch): "+str(e)
                 
 		names  = "LShoulderRoll"
-		angleLists  = [2.4]
+		angleLists  = [8.6]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
@@ -72,7 +72,7 @@ class getNaoArmMoves:
 			print "Error when making nao hold the bottle(LShoulderRoll):"+str(e)
 
 		names  = "RShoulderRoll"
-		angleLists  = [-2.4]
+		angleLists  = [-8.6]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
@@ -121,7 +121,47 @@ class getNaoArmMoves:
 		except Exception, e:
 			print "Error when making nao hold the bottle(RHand): "+str(e)
 
-	#RELEASE THE BOTTLE MOVEMENT___________________________________________________________________________
+		names  = "LElbowRoll"
+		angleLists  = [-67.5]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+			print "Error when making nao hold the bottle(LHand): "+str(e)
+
+		names  = "RElbowRoll"
+		angleLists  = [67.5]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+			print "Error when making nao hold the bottle(RHand): "+str(e)
+
+		names  = "LElbowYaw"
+		angleLists  = [-17.5]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+			print "Error when making nao hold the bottle(LHand): "+str(e)
+
+		names  = "RElbowYaw"
+		angleLists  = [17.5]
+		timeLists   = [1.0]
+		isAbsolute  = True
+		angleLists = [x * (math.pi/180.0) for x in angleLists]
+		try:
+			self.motionDevice.post.angleInterpolation(names, angleLists, timeLists, isAbsolute)
+		except Exception, e:
+			print "Error when making nao hold the bottle(RHand): "+str(e)
+
+		#RELEASE THE BOTTLE MOVEMENT___________________________________________________________________________
 	def releaseBottle(self):
 		names  = "LShoulderPitch"
 		angleLists  = [103]
