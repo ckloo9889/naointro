@@ -16,28 +16,28 @@ import naoqi
 from naoqi import ALBroker
 from naoqi import ALModule
 from naoqi import ALProxy
-from naoqi import ALBehavior         
+from naoqi import ALBehavior		 
 from naoqi import motion
 
 #_________________________________________________________________________________________________
 #_________________________________________________________________________________________________
 class getNaoHeadMoves:
 	def __init__(self, host, port):
-		self.host         = host # "192.168.0.80"
-		self.port         = port # 9559
+		self.host		 = host # "192.168.0.80"
+		self.port		 = port # 9559
 		self.motionDevice = None
 		self.memoryDevice = None
 		self.speechDevice = None
-		self.nrJoints     = 0
+		self.nrJoints	 = 0
 
 	#INITIALIZE THE MOTION DEVICE__________________________________________________________________
 	def initDevice(self):
 		#CONNECT TO A PROXY
 		try:
-		    self.motionDevice = ALProxy("ALMotion", self.host, self.port)
+			self.motionDevice = ALProxy("ALMotion", self.host, self.port)
 		except Exception, e:
-		    print "Error when creating motion device proxy:"+str(e)
-		    exit(1)
+			print "Error when creating motion device proxy:"+str(e)
+			exit(1)
 
 	#MOVE HEAD YAW_________________________________________________________________________________
 	def moveHeadYawAbs(self, pTargetAngles, timeLists):
@@ -48,7 +48,7 @@ class getNaoHeadMoves:
 		try:
 			self.motionDevice.angleInterpolation(names, pTargetAngles, timeLists, isAbsolute)
 		except Exception, e:
-		    print "Error when changing the head yaw: "+str(e)
+			print "Error when changing the head yaw: "+str(e)
 
 	#MOVE HEAD PITCH________________________________________________________________________________
 	def moveHeadPitchAbs(self, pTargetAngles, timeLists):
@@ -60,6 +60,6 @@ class getNaoHeadMoves:
 		try:
 			self.motionDevice.angleInterpolation(names, pTargetAngles, timeLists, isAbsolute)
 		except Exception, e:
-		    print "Error when changing the head pitch: "+str(e)
+			print "Error when changing the head pitch: "+str(e)
 
 		
