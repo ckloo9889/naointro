@@ -2,6 +2,7 @@ import sys
 from threading import Thread
 import threading
 import math
+import time
 from nao_config import *
 from get_nao_arm_moves import *
 from get_nao_head_moves import *
@@ -13,8 +14,8 @@ from get_nao_behaviors import *
 class NaoOpening:
 	def __init__(self):
 		self.nao1       = NaoConfig("192.168.0.87", 9559) #"127.0.0.1", 9559
-		#self.nao1Speech = getNaoSpeech(self.nao1.ip, self.nao1.port, "Kenny22Enhanced")
-		#self.nao1Speech.initDevice(False)
+		self.nao1Speech = getNaoSpeech(self.nao1.ip, self.nao1.port, "Kenny22Enhanced")
+		self.nao1Speech.initDevice(False)
 		self.nao1Arm    = getNaoArmMoves(self.nao1.ip, self.nao1.port)
 		self.nao1Arm.initDevice()
 		self.nao1Head   = getNaoHeadMoves(self.nao1.ip, self.nao1.port)
@@ -23,8 +24,8 @@ class NaoOpening:
 		self.nao1Legs.initDevice()
 		
 		self.nao2         = NaoConfig("192.168.0.80", 9559) #"127.0.0.1", 9559
-		#self.nao2Speech   = getNaoSpeech(self.nao2.ip, self.nao2.port, "Heather22Enhanced")
-		#self.nao2Speech.initDevice(False)
+		self.nao2Speech   = getNaoSpeech(self.nao2.ip, self.nao2.port, "Heather22Enhanced")
+		self.nao2Speech.initDevice(False)
 		self.nao2Legs     = getNaoLegMoves(self.nao2.ip, self.nao2.port)
 		self.nao2Legs.initDevice()
 		self.nao2Behavior = getNaoBehaviors(self.nao2.ip, self.nao2.port)
@@ -49,11 +50,9 @@ class NaoOpening:
 		except Exception,e:
 			print "error in threading while walking to initial position: "+str(e)
 			lockNaoLegs.release()	
-			#STOP SPEECH RECO
-			#self.nao2Speech.stopSpeechReco()
 		lockNaoLegs.release()	
 		nao1T1.join()
-		#nao2T1.join()
+		nao2T1.join()
 		
 		#NAOS INITALIZING POSITIONS
 		lockNaoLegs.acquire(1)
@@ -65,9 +64,9 @@ class NaoOpening:
 		except Exception,e:	
 			print "error in threading while taking the initial positions: "+str(e)	
 			lockNaoLegs.release()
-			#STOP SPEECH RECO
-			#self.nao2Speech.stopSpeechReco()		
 		lockNaoLegs.release()
+		nao1T2.join()
+		nao2T2.join()
 		
 	#MAKE NAO2(RED) WALK TO NAO1(BLUE)_______________________________________________________________________________					
 	def nao2Walk2Nao1(self):
@@ -83,27 +82,39 @@ class NaoOpening:
 
 	#DEMO1: RELEASE BOTTLE__________________________________________________________________________________										
 	def startDemo1(self):
-		time.sleep(10)
-		'''
+		time.sleep(3)
+
 		#NAO1 CALLS FOR NAO2
-		self.nao1Speech.genSpeech("Hey Nao Get up")
+		self.nao1Speech.genSpeech("Hey Nao stand up")
 		time.sleep(1)
-		self.nao1Speech.genSpeech("Holiday is over Get up")
+		self.nao1Speech.genSpeech("Holiday is over stand up")
 		time.sleep(1)
 		self.nao1Head.moveHeadYawAbs([90],[2.0])
 		time.sleep(1)
-		self.nao1Speech.genSpeech("Nao wont get up, can you all together ask him to get up on my count of three?")
+		self.nao1Speech.genSpeech("Nao wont stand up, can you all together ask him to stand up on my count of three?")
 		time.sleep(1)
 		self.nao1Speech.genSpeech("1 2 3")
 		time.sleep(10)
-		'''
-		self.nao1Arm.releaseBottle()
-		'''
-		self.nao1Legs.walkTo(-0.1,0,0)
-		#REPLACE THIS WITH RECOGNITION!!!!!
-		time.sleep(5)
 
-		#NAO2 GETS UP AND WALKS TO NAO1
+		#NAO2 TRIES TO RECOGNIZE THE AUDIENCE SAYING: "STAND UP"
+		self.nao2Speech.startSpeechReco()
+		try:
+			speechResult = self.nao2Speech.naoChat(False)
+		except Exception,e:	
+			print "error while executing the demo: "+str(e)	
+			#STOP SPEECH RECO
+			self.nao2Speech.stopSpeechReco()
+		initial_time = time.time()				
+		while(speechResult.find("stand up")!=-1 or (time.time()-initial_time)>=20): #20 SECONDS HAVE PASSED OR NAO HAS RECOGNIZED "STAND UP"
+			try:
+				speechResult = self.nao2Speech.naoChat(False)
+			except Exception,e:	
+				print "error while executing the demo: "+str(e)	
+				#STOP SPEECH RECO
+				self.nao2Speech.stopSpeechReco()				
+		self.nao2Speech.stopSpeechReco()
+
+		#NOW NAO2 WALKS TO NAO1	
 		self.nao2Walk2Nao1()
 
 		#NAO2 RECOGNIZES IF THE CROWD SAID "GO" & NAO1 RELEASES THE BOTTLE		
@@ -114,7 +125,7 @@ class NaoOpening:
 		self.nao2Speech.genSpeech("How do we do that?")
 		time.sleep(1)
 		
-		#NAO1 POINTS TOWARS AIBO ?!?!
+		#NAO1 POINTS TOWARS AIBO ?!?!?!?!?!!?!?!?!?!?!?!?!!?
 	
 		self.nao1Speech.genSpeech("All we have to do is hit that button over there")
 		time.sleep(1)
@@ -122,26 +133,42 @@ class NaoOpening:
 		time.sleep(3)
 		self.nao2Speech.genSpeech("I can't hear you!")
 		time.sleep(1)
-		self.nao2Speech.genSpeech("we NEED to say go all together after 3")
+		self.nao2Speech.genSpeech("we need to say GO NAO all together after 3")
 		time.sleep(1)
 		self.nao2Speech.genSpeech("1 2 3")
 
-		#REPLACE THIS WITH RECOGNITION!!!!!		
-		time.sleep(5)
-
+		#NAO2 TRIES TO RECOGNIZE THE AUDIENCE SAYING: "GO NAO"
+		self.nao2Speech.startSpeechReco()
+		try:
+			speechResult = self.nao2Speech.naoChat(False)
+		except Exception,e:	
+			print "error while executing the demo: "+str(e)	
+			#STOP SPEECH RECO
+			self.nao2Speech.stopSpeechReco()
+		initial_time = time.time()				
+		while(speechResult.find("go nao")!=-1 or (time.time()-initial_time)>=20): #20 SECONDS HAVE PASSED OR NAO HAS RECOGNIZED "GO NAO"
+			try:
+				speechResult = self.nao2Speech.naoChat(False)
+			except Exception,e:	
+				print "error while executing the demo: "+str(e)	
+				#STOP SPEECH RECO
+				self.nao2Speech.stopSpeechReco()				
+		self.nao2Speech.stopSpeechReco()
+			
 		#NAO1 RELEASES THE BOTTLE
 		self.nao1Arm.releaseBottle()
 
-		'''
-		#self.nao1.stiffnessOff()
-		#self.nao2.stiffnessOff()
+		self.nao1Legs.walkTo(0, -0.1, 0)
+
+		self.nao1.stiffnessOff()
+		self.nao2.stiffnessOff()
 
 	#DEMO2: NAO1 & NAO2 TRY TO PUSH THE BUTTON_________________________________________________________________
 	def startDemo2(self):
 		"""
 		nao1Speech = getNaoSpeech(self.nao1.ip, self.nao1.port,"Heather22Enhanced")
 		nao1Speech.initDevice(False)
-		nao1Speech.genSpeech("Hey Nao Get the fuck up")
+		nao1Speech.genSpeech("Hey Nao Get the $#%^@ up")
 
 		nao1Leg = getNaoLegMoves(self.nao1.ip, self.nao1.port)
 		nao1Leg.initDevice()
@@ -164,10 +191,11 @@ class NaoOpening:
 try:		
 	naoDemo = NaoOpening()
 	naoDemo.initDemo()
+	naoDemo.startDemo1()
 except Exception,e:	
 	print "error while executing the demo: "+str(e)	
 	#STOP SPEECH RECO
-	#naoDemo.nao2Speech.stopSpeechReco()		
+	naoDemo.nao2Speech.stopSpeechReco()		
 		
 #naoDemo.startDemo1()
 #naoDemo.startDemo2()
