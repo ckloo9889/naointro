@@ -87,6 +87,8 @@ class getNaoSpeech:
 			self.aliceKernel.respond("load aiml b")
 			os.chdir(cwd)					
 
+	#START THE SPEECH RECOGNITON__________________________________________________________________
+	def startSpeechReco(self):
 		#START WORDS DETECTION
 		try:
 			self.recoDevice.subscribe("MyModule")
