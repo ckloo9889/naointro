@@ -38,33 +38,53 @@ class NaoOpening:
 		
 		self.nao2.initDevice()
 		self.nao2.initPos()
-		
-		#WALK TO INITIAL POSITION
-		lockNaoLegs = threading.Lock()
-		lockNaoLegs.acquire(1)
+
+		lockNao2Legs = threading.Lock()
+		lockNao1Legs = threading.Lock()
+
+		#WALK TO INITIAL POSITION NAO2
+		lockNao2Legs.acquire(1)
 		try:
 			nao2T1 = Thread(target=self.nao2Legs.walkTo, args = (0.3,-0.3,0))
 			nao2T1.start()
+		except Exception,e:
+			print "error in threading while walking to initial position: "+str(e)
+			lockNao2Legs.release()	
+		lockNao2Legs.release()	
+
+		#WALK TO INITIAL POSITION NAO1
+		lockNao1Legs.acquire(1)
+		try:
 			nao1T1 = Thread(target=self.nao1Legs.walkTo, args=(0.3,0.3,0))
 			nao1T1.start()
 		except Exception,e:
 			print "error in threading while walking to initial position: "+str(e)
-			lockNaoLegs.release()	
-		lockNaoLegs.release()	
+			lockNao1Legs.release()	
+		lockNao1Legs.release()
+	
 		nao1T1.join()
 		nao2T1.join()
 		
-		#NAOS INITALIZING POSITIONS
-		lockNaoLegs.acquire(1)
+		#INITALIZING POSITIONS NAO2
+		lockNao2Legs.acquire(1)
 		try:
 			nao2T2 = Thread(target=self.nao2Behavior.callBehavior, args = ("sitdown",))
 			nao2T2.start()
+		except Exception,e:	
+			print "error in threading while taking the initial positions: "+str(e)	
+			lockNao2Legs.release()
+		lockNao2Legs.release()
+
+		#INITALIZING POSITIONS NAO1
+		lockNao1Legs.acquire(1)
+		try:
 			nao1T2 = Thread(target=self.nao1Arm.initPosHoldBottle, args=())
 			nao1T2.start()
 		except Exception,e:	
 			print "error in threading while taking the initial positions: "+str(e)	
-			lockNaoLegs.release()
-		lockNaoLegs.release()
+			lockNao1Legs.release()
+		lockNao1Legs.release()
+
 		nao1T2.join()
 		nao2T2.join()
 		
