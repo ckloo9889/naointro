@@ -42,7 +42,7 @@ class getNaoArmMoves:
 	#HOLDING BOTTLE POSITON_____________________________________________________________________
 	def initPosHoldBottle(self):
 		names  = "LShoulderPitch"
-		angleLists  = [40]
+		angleLists  = [16.0]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
@@ -52,7 +52,7 @@ class getNaoArmMoves:
 			print "Error when making nao hold the bottle(LShoulderPitch): "+str(e)
 
 		names  = "RShoulderPitch"
-		angleLists  = [40]
+		angleLists  = [16.0]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
@@ -102,7 +102,7 @@ class getNaoArmMoves:
 			print "Error when making nao hold the bottle(RWristYaw): "+str(e)
 
 		names  = "LHand"
-		angleLists  = [49.9]
+		angleLists  = [32.9]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
@@ -112,7 +112,7 @@ class getNaoArmMoves:
 			print "Error when making nao hold the bottle(LHand): "+str(e)
 
 		names  = "RHand"
-		angleLists  = [49.9]
+		angleLists  = [32.9]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
@@ -122,7 +122,7 @@ class getNaoArmMoves:
 			print "Error when making nao hold the bottle(RHand): "+str(e)
 
 		names  = "LElbowRoll"
-		angleLists  = [-67.5]
+		angleLists  = [-60.5]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
@@ -132,7 +132,7 @@ class getNaoArmMoves:
 			print "Error when making nao hold the bottle(LHand): "+str(e)
 
 		names  = "RElbowRoll"
-		angleLists  = [67.5]
+		angleLists  = [60.5]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]

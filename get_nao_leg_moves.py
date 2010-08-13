@@ -71,12 +71,14 @@ class getNaoLegMoves:
 		except Exception, e:
 			print "Error when enabling the hands during the walk: "+str(e)
 		
+		'''	
 		#ENABLE FOOT CONTACT PROTETCTION
 		try:
 			self.motionDevice.setMotionConfig([["ENABLE_FOOT_CONTACT_PROTECTION",True]])	
 		except Exception, e:
 			print "Error when enabling the foot protection: "+str(e)
-
+		'''
+		
 		try:
 			self.motionDevice.post.walkTo(targetX, targetY, targetTheta)
 		except Exception, e:
