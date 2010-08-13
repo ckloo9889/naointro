@@ -50,6 +50,7 @@ class getNaoSpeech:
 		    exit(1)
 		try:
 			self.speechDevice.setVoice(self.voice)	
+			self.speechDevice.setVolume(1.0)	
 		except Exception, e:
 		    print "Error when setting the voice: "+str(e)
 
@@ -104,6 +105,14 @@ class getNaoSpeech:
 		predictedWord = predictedWord.strip()
 		return predictedWord
 
+	#RESET THE VARIABLE BEFORE RECOGNIZING______________________________________________________
+	def resetRecoVariable(self):
+		try:
+			self.memoryDevice.removeData("WordRecognized")
+			self.memoryDevice.insertData("WordRecognized",["",0])
+		except Exception, e:
+		    print "Error when overwriting the reacognized word: "+str(e)
+
 	#CHAT WITH NAO__________________________________________________________________________________
 	def naoChat(self,chat):
 		try:
@@ -117,13 +126,7 @@ class getNaoSpeech:
 				if(i%2 == 1):
 					dictio[inputSpeech[i-1]] = inputSpeech[i]
 		predictedWords = self.recoWords(dictio)
-
-		try:
-			self.memoryDevice.removeData("WordRecognized")
-			self.memoryDevice.insertData("WordRecognized",["",0])
-		except Exception, e:
-		    print "Error when overwriting the reacognized word: "+str(e)
-
+		self.resetRecoVariable()
 		if(len(predictedWords)>0):
 			print str(inputSpeech)+"..."+predictedWords
 			if(chat == True): #RESPOND TO THE INPUT
