@@ -13,7 +13,7 @@ from get_nao_behaviors import *
 #__________________________________________________________________________________________
 class NaoOpening:
 	def __init__(self):
-		self.nao1       = NaoConfig("192.168.0.87", 9559) #"127.0.0.1", 9559
+		self.nao1       = NaoConfig("192.168.0.90", 9559) #local: 127.0.0.1, 9559, wired: 192.168.0.87, wireless: 192.168.0.90
 		self.nao1Speech = getNaoSpeech(self.nao1.ip, self.nao1.port, "Kenny22Enhanced")
 		self.nao1Speech.initDevice(False)
 		self.nao1Arm    = getNaoArmMoves(self.nao1.ip, self.nao1.port)
@@ -22,8 +22,8 @@ class NaoOpening:
 		self.nao1Head.initDevice()
 		self.nao1Legs   = getNaoLegMoves(self.nao1.ip, self.nao1.port)
 		self.nao1Legs.initDevice()
-		
-		self.nao2         = NaoConfig("192.168.0.80", 9559) #"127.0.0.1", 9559
+
+		self.nao2         = NaoConfig("192.168.0.91", 9559) #local: 127.0.0.1, 9559, wired: 192.168.0.87, wireless: 192.168.0.91
 		self.nao2Speech   = getNaoSpeech(self.nao2.ip, self.nao2.port, "Heather22Enhanced")
 		self.nao2Speech.initDevice(False)
 		self.nao2Legs     = getNaoLegMoves(self.nao2.ip, self.nao2.port)
@@ -32,27 +32,24 @@ class NaoOpening:
 		self.nao2Head.initDevice()
 		self.nao2Behavior = getNaoBehaviors(self.nao2.ip, self.nao2.port)
 		self.nao2Behavior.initDevice()
-
+                
 		#GET INITIAL ROBOT POSITIONS
 		self.initialPosNao1 = self.nao1Legs.motionDevice.getRobotPosition(True)	
 		self.initialPosNao2 = self.nao2Legs.motionDevice.getRobotPosition(True)
-
-		
+                
 	#SEND NAOS TO THE INITIAL POSITIONS IN THE SPACE_____________________________________________	
 	def initDemo(self):
 		self.nao1.initDevice()
 		self.nao1.initPos()
-		
 		self.nao2.initDevice()
 		self.nao2.initPos()
 		
 		lockNao2Legs = threading.Lock()
 		lockNao1Legs = threading.Lock()
-
 		#WALK TO INITIAL POSITION NAO2
 		lockNao2Legs.acquire(1)
 		try:
-			nao2T1 = Thread(target=self.nao2Legs.walkTo, args = (0.3,-0.3,0))
+			nao2T1 = Thread(target=self.nao2Legs.walkTo, args = (0.0,-0.4,0))
 			nao2T1.start()
 		except Exception,e:
 			print "error in threading while walking to initial position: "+str(e)
@@ -60,6 +57,7 @@ class NaoOpening:
 		lockNao2Legs.release()	
 
 		#WALK TO INITIAL POSITION NAO1
+		'''
 		lockNao1Legs.acquire(1)
 		try:
 			nao1T1 = Thread(target=self.nao1Legs.walkTo, args=(0.3,0.3,0))
@@ -68,10 +66,10 @@ class NaoOpening:
 			print "error in threading while walking to initial position: "+str(e)
 			lockNao1Legs.release()	
 		lockNao1Legs.release()
-	
 		nao1T1.join()
+                '''	
 		nao2T1.join()
-		
+
 		#INITALIZING POSITIONS NAO2
 		lockNao2Legs.acquire(1)
 		try:
@@ -118,8 +116,7 @@ class NaoOpening:
 
 	#DEMO1: RELEASE BOTTLE__________________________________________________________________________________										
 	def startDemo1(self):
-		time.sleep(3)
-
+		time.sleep(5)
 		#NAO1 CALLS FOR NAO2
 		self.nao1Head.moveHeadYawAbs([-60],[2.0])
 		time.sleep(2)
@@ -132,7 +129,6 @@ class NaoOpening:
 		self.nao1Speech.genSpeech("Nao wont stand up, can you all together ask him to stand up on my count of three?")
 		time.sleep(4)
 		self.nao1Speech.genSpeech("1 2 3")
-
 		#NAO2 TRIES TO RECOGNIZE THE AUDIENCE SAYING: "STAND UP"
 		self.nao2Speech.startSpeechReco()
 		#RESET THE MEMORY VARIABLE BEFORE RECOGNIZING AGAIN
@@ -144,7 +140,7 @@ class NaoOpening:
 			#STOP SPEECH RECO
 			self.nao2Speech.stopSpeechReco()
 		initial_time = time.time()				
-		while(speechResult.find("stand up")==-1 and (time.time()-initial_time)<=10): #20 SECONDS HAVE PASSED OR NAO HAS RECOGNIZED "STAND UP"
+		while(speechResult.find("stand up")==-1 and (time.time()-initial_time)<=5): #20 SECONDS HAVE PASSED OR NAO HAS RECOGNIZED "STAND UP"
 			try:
 				speechResult = self.nao2Speech.naoChat(False)
 				if(speechResult.find("stand up")!=-1):
@@ -164,10 +160,11 @@ class NaoOpening:
 
 		#NAO2 RECOGNIZES IF THE CROWD SAID "GO" & NAO1 RELEASES THE BOTTLE		
 		time.sleep(2)
-		self.nao2Head.moveHeadYawAbs([40],[2.0])
+		#self.nao2Head.moveHeadYawAbs([40],[2.0])
 		time.sleep(2)
 		self.nao2Speech.genSpeech("what's up? What are you holding that bottle for?")
 		time.sleep(3)
+
 		self.nao1Head.moveHeadYawAbs([-40],[2.0])
 		time.sleep(2)
 		self.nao1Speech.genSpeech("We have to open the new Informatics institute today!")
@@ -204,7 +201,7 @@ class NaoOpening:
 			#STOP SPEECH RECO
 			self.nao2Speech.stopSpeechReco()
 		initial_time = time.time()
-		while(speechResult.find("go nao")==-1 and (time.time()-initial_time)<=10): #20 SECONDS HAVE PASSED OR NAO HAS RECOGNIZED "GO NAO"
+		while(speechResult.find("go nao")==-1 and (time.time()-initial_time)<=5): #20 SECONDS HAVE PASSED OR NAO HAS RECOGNIZED "GO NAO"
 			try:
 				speechResult = self.nao2Speech.naoChat(False)
 				if(speechResult.find("go nao")!=-1):
@@ -214,7 +211,7 @@ class NaoOpening:
 				#STOP SPEECH RECO
 				self.nao2Speech.stopSpeechReco()				
 		self.nao2Speech.stopSpeechReco()
-	
+
 		#NAO1 RELEASES THE BOTTLE
 		self.nao1Arm.releaseBottle()
 
