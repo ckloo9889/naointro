@@ -42,7 +42,7 @@ class getNaoArmMoves:
 	#HOLDING BOTTLE POSITON_____________________________________________________________________
 	def initPosHoldBottle(self):
 		names  = "LShoulderPitch"
-		angleLists  = [16.0]
+		angleLists  = [-10.0]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
@@ -52,7 +52,7 @@ class getNaoArmMoves:
 			print "Error when making nao hold the bottle(LShoulderPitch): "+str(e)
 
 		names  = "RShoulderPitch"
-		angleLists  = [16.0]
+		angleLists  = [-10.0]
 		timeLists   = [1.0]
 		isAbsolute  = True
 		angleLists = [x * (math.pi/180.0) for x in angleLists]
