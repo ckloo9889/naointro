@@ -1,8 +1,8 @@
 import os
 import sys
 import time
-from PIL import Image
-import cv
+#from PIL import Image
+#import cv
 import imghdr
 import os
 import sys
