@@ -6,7 +6,7 @@ import time
 from nao_config import *
 from get_nao_arm_moves import *
 from get_nao_head_moves import *
-from get_nao_walk import *
+from get_nao_leg_moves import *
 from get_nao_speech import *
 from get_nao_behaviors import *
 #__________________________________________________________________________________________
@@ -190,27 +190,27 @@ class NaoOpening:
 		time.sleep(2)
 		self.nao2Speech.genSpeech("1 2 3")
 
-		#NAO2 TRIES TO RECOGNIZE THE AUDIENCE SAYING: "GO NAO"
-		self.nao2Speech.startSpeechReco()
+		#NAO1 TRIES TO RECOGNIZE THE AUDIENCE SAYING: "GO NAO"
+		self.nao1Speech.startSpeechReco()
 		#RESET THE MEMORY VARIABLE BEFORE RECOGNIZING AGAIN
-		self.nao2Speech.resetRecoVariable()
+		self.nao1Speech.resetRecoVariable()
 		try:
-			speechResult = self.nao2Speech.naoChat(False)
+			speechResult = self.nao1Speech.naoChat(False)
 		except Exception,e:	
 			print "error while executing the demo: "+str(e)	
 			#STOP SPEECH RECO
-			self.nao2Speech.stopSpeechReco()
+			self.nao1Speech.stopSpeechReco()
 		initial_time = time.time()
 		while(speechResult.find("go nao")==-1 and (time.time()-initial_time)<=5): #20 SECONDS HAVE PASSED OR NAO HAS RECOGNIZED "GO NAO"
 			try:
-				speechResult = self.nao2Speech.naoChat(False)
+				speechResult = self.nao1Speech.naoChat(False)
 				if(speechResult.find("go nao")!=-1):
 					print "recognized <<go nao>>..."+str(time.time()-initial_time)
 			except Exception,e:	
 				print "error while executing the demo: "+str(e)	
 				#STOP SPEECH RECO
-				self.nao2Speech.stopSpeechReco()				
-		self.nao2Speech.stopSpeechReco()
+				self.nao1Speech.stopSpeechReco()				
+		self.nao1Speech.stopSpeechReco()
 
 		#NAO1 RELEASES THE BOTTLE
 		self.nao1Arm.releaseBottle()
