@@ -49,7 +49,7 @@ class NaoOpening:
 		#WALK TO INITIAL POSITION NAO2
 		lockNao2Legs.acquire(1)
 		try:
-			nao2T1 = Thread(target=self.nao2Legs.walkTo, args = (0.0,-0.4,0))
+			nao2T1 = Thread(target=self.nao2Legs.walkTo, args = (0.1,-0.4,0.0))
 			nao2T1.start()
 		except Exception,e:
 			print "error in threading while walking to initial position: "+str(e)
@@ -110,7 +110,7 @@ class NaoOpening:
 		print "BLUE NAO >> "+str(posNao1)
 		print "RED NAO >> "+str(posNao2)
 		
-		self.nao2Legs.walkTo(math.fabs(posNao1[0]-posNao2[0])-0.4,
+		self.nao2Legs.walkTo(math.fabs(posNao1[0]-posNao2[0]) - 0.6,
 						math.fabs(posNao1[1]-posNao2[1]),
 						math.fabs(posNao1[2]-posNao2[2]))
 
